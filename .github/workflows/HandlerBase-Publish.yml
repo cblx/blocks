@@ -13,5 +13,7 @@ jobs:
         with:
           dotnet-version: 6.0.x
       - run: dotnet pack -p:PackageVersion=${GITHUB_REF##*/} --output ${{github.workspace}} -c Release
+        working-directory: HandlerBase/Core
       - run: dotnet nuget push '*.nupkg' --api-key ${{secrets.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json
+        working-directory: HandlerBase/Core
       
