@@ -5,18 +5,31 @@ namespace Cblx.Blocks.Models;
 internal sealed class HandlerDeclaration
 {
 
-	public HandlerDeclaration(string name, string? routePrefix = null)
+	public HandlerDeclaration(
+		string name, 
+		string handlerNamespace, 
+		HandlerActionDeclaration handlerAction, 
+		string? routePrefix = null)
 	{
-		Name = name;
+		InterfaceName = name;
+		ImplementationName = name.Substring(1);
 		RoutePrefix = routePrefix;
+		HandlerNamespace = handlerNamespace;
+		HandlerAction = handlerAction;
 	}
 
-	public string Name { get; private set; }
+	public string InterfaceName { get; private set; }
+	public string ImplementationName { get; private set; }
+    public string HandlerNamespace { get; private set; }
 	public string? RoutePrefix { get; private set; }
 
 
-	public string BuildRoute()
+	public HandlerActionDeclaration HandlerAction { get; private set; }
+
+	public string CreateAsyncToken()
 	{
-		throw new NotImplementedException();
+		return HandlerAction.ReturnDeclaration.HasAsync ? " async " : "";
 	}
+	
+
 }

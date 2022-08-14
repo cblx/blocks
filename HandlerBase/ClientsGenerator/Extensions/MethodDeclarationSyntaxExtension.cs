@@ -21,6 +21,6 @@ internal static class MethodDeclarationSyntaxExtension
     {
         return methodDeclaration
             .Modifiers
-            .Any(token => token.ToFullString() is "public");
+            .Any(token => token.Text.Trim() is "public");
     }
 }

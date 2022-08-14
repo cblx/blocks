@@ -12,6 +12,14 @@ internal static class HandlerActionDeclarationFactory
         var verb = methodDeclaration.IdentifyHttpVerb();
         if (verb is HttpVerb.Unknown) return default;
 
-        return new HandlerActionDeclaration(methodDeclaration.Identifier.ValueText, verb);
+        var handlerReturnDeclaration = HandlerReturnDeclarationFactory.Create(methodDeclaration);
+        var handlerParameterDeclaration = HandlerParameterDeclarationFactory.CreateOrDefault(methodDeclaration);
+
+
+        return new HandlerActionDeclaration(
+            methodDeclaration.Identifier.ValueText, 
+            verb, 
+            handlerReturnDeclaration, 
+            handlerParameterDeclaration);
     } 
 }

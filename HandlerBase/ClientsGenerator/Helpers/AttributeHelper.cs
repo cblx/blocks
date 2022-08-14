@@ -13,7 +13,7 @@ internal static class AttributeHelper
         => interfaceDeclaration
             .AttributeLists
             .SelectMany(attrList => attrList.Attributes)
-            .Where(attr => attr.ToFullString().Contains("ClassDeclaration"))
+            .Where(attr => attr.ToFullString().Contains("GenerateClient"))
             .OfType<AttributeSyntax>();
     
 }
