@@ -18,7 +18,17 @@ internal static class AnalyzeNodeHelper
 
     private static void ProcessIdentifierNameSyntax(this ReturnDeclaration declaration, IdentifierNameSyntax syntax)
     {
+
+        switch (syntax.Identifier.Text)
+        {
+            case var typeName when
+                 typeName.StartsWith("Task") ||
+                 typeName.StartsWith("ValueTask"):
+                declaration.ProcessTaskOrValueTaskType(syntax); return;
+        }
+
         declaration.TypeName = syntax.Identifier.Text.Trim();
+        declaration.HasVoid = false;
 
         if (!declaration.ManipulationFormat.Contains(declaration.TypeName))
         {
@@ -38,11 +48,11 @@ internal static class AnalyzeNodeHelper
 
     private static void ProcessGenericNameSyntax(this ReturnDeclaration declaration, GenericNameSyntax syntax)
     {
-       switch (syntax.Identifier.Text)
+        switch (syntax.Identifier.Text)
         {
             case var typeName when
-                typeName.StartsWith("Task") ||
-                typeName.StartsWith("ValueTask"):
+                 typeName.StartsWith("Task") ||
+                 typeName.StartsWith("ValueTask"):
                 declaration.ProcessTaskOrValueTaskType(syntax); break;
 
             case var typeName when typeName.StartsWith("IEnumerable"):
@@ -50,17 +60,19 @@ internal static class AnalyzeNodeHelper
         }
     }
 
-    private static void ProcessTaskOrValueTaskType(this ReturnDeclaration declaration, GenericNameSyntax syntax)
+    private static void ProcessTaskOrValueTaskType(this ReturnDeclaration declaration, SyntaxNode syntax)
     {
         declaration.HasAsync = true;
-        declaration.TypeName = syntax.Identifier.Text;
+        declaration.HasVoid = true;
+        declaration.TypeName = syntax.ToFullString();
     }
 
-    private static void ProcessIEnumerableType(this ReturnDeclaration declaration, GenericNameSyntax syntax)
+    private static void ProcessIEnumerableType(this ReturnDeclaration declaration, SyntaxNode syntax)
     {
-        if (!declaration.ManipulationFormat.Contains(syntax.Identifier.Text))
+        if (!declaration.ManipulationFormat.Contains(syntax.ToFullString()))
         {
             declaration.ManipulationFormat = syntax.ToFullString();
+            declaration.HasVoid = false;
         }
     }
 }

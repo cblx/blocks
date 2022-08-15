@@ -1,4 +1,5 @@
 ﻿using Cblx.Blocks.Enums;
+using Cblx.Blocks.Factories;
 using Cblx.Blocks.Helpers;
 using Cblx.Blocks.Models;
 using System.Text;
@@ -45,7 +46,9 @@ internal static class HandlerClientTamplate
     {
         switch (handler.HandlerAction.Verb)
         {
-            case HttpVerb.Get : CreateGetMethodBody(builder, handler); break;
+            case HttpVerb.Get: CreateGetMethodBody(builder, handler); break;
+            case HttpVerb.Post: CreatePostMethodBody(builder, handler); break;
+            case HttpVerb.Delete: CreateDeleteMethodBody(builder, handler); break;
 
             case HttpVerb.Unknown:
             default: builder.AppendLine("\t\t\t // Not Identifier"); break;
@@ -68,6 +71,43 @@ internal static class HandlerClientTamplate
                     var queryString = QueryStringHelper.ToQueryString({{handler.HandlerAction.ParameterDeclaration.Name}});
                     return (await _httpClient.GetFromJsonAsync<{{handler.HandlerAction.ReturnDeclaration.ManipulationFormat}}>($"{{StringHelper.CreateEndPointRoute(handler)}}?{queryString}"))!;
             """);
+    }
+
+    private static void CreatePostMethodBody(StringBuilder builder, HandlerDeclaration handler)
+    {
+        if (handler.HandlerAction.ParameterDeclaration is null) return;        
+
+        builder.AppendLine($"""
+                    var responseMessage = await _httpClient.PostAsJsonAsync("{StringHelper.CreateEndPointRoute(handler)}", {handler.HandlerAction.ParameterDeclaration.Name});
+            """
+        );
+
+        if (!handler.HandlerAction.ReturnDeclaration.HasVoid)
+        {
+            builder.AppendLine($"""
+                        return (await responseMessage.Content.ReadFromJsonAsync<{handler.HandlerAction.ReturnDeclaration.ManipulationFormat}>())!;
+                """
+            );
+        }
+    }
+
+    private static void CreateDeleteMethodBody(StringBuilder builder, HandlerDeclaration handler)
+    {
+        if (handler.HandlerAction.ParameterDeclaration is null) return;        
+
+        builder.AppendLine($"""
+                    var queryString = QueryStringHelper.ToQueryString({handler.HandlerAction.ParameterDeclaration.Name});
+                    var responseMessage = await _httpClient.DeleteAsync("{StringHelper.CreateEndPointRoute(handler)}", {handler.HandlerAction.ParameterDeclaration.Name});
+            """
+        );
+
+        if (!handler.HandlerAction.ReturnDeclaration.HasVoid)
+        {
+            builder.AppendLine($"""
+                        return (await responseMessage.Content.ReadFromJsonAsync<{handler.HandlerAction.ReturnDeclaration.ManipulationFormat}>())!;
+                """
+            );
+        }
     }
 
 
