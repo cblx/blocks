@@ -7,9 +7,9 @@
 		<RootNamespace>Cblx.Blocks</RootNamespace>
 	</PropertyGroup>
 
-	<ItemGroup>
+	<!--<ItemGroup>
 		<Compile Include="..\Abstractions\GenerateClientAttribute.cs" Link="LinkedAttributes\GenerateClientAttribute.cs" />
-	</ItemGroup>
+	</ItemGroup>-->
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.2.0" PrivateAssets="all" />

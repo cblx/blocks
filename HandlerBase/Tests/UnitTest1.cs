@@ -5,7 +5,7 @@ namespace Cblx.Blocks.HandlerBase.Tests;
 public class UnitTest1
 {
     [Fact]
-    public async Task Test1()
+    public void Test1()
     {
         //var httpClient = new HttpClient();
         //httpClient.BaseAddress = new Uri("https://google.com");
