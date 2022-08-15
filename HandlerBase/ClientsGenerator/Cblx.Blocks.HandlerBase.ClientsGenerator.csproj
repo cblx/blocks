@@ -21,6 +21,7 @@
 
 	<ItemGroup>
 		<!-- Package the generator in the analyzer directory of the nuget package -->
+		<ProjectReference Include="..\Abstractions\Cblx.Blocks.HandlerBase.Abstractions.csproj" />
 		<None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
 	</ItemGroup>
 
