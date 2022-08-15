@@ -95,9 +95,9 @@ internal static class HandlerClientTamplate
     {
         if (handler.HandlerAction.ParameterDeclaration is null) return;        
 
-        builder.AppendLine($"""
+        builder.AppendLine($$"""
                     var queryString = QueryStringHelper.ToQueryString({handler.HandlerAction.ParameterDeclaration.Name});
-                    var responseMessage = await _httpClient.DeleteAsync("{StringHelper.CreateEndPointRoute(handler)}", {handler.HandlerAction.ParameterDeclaration.Name});
+                    var responseMessage = await _httpClient.DeleteAsync($"{{StringHelper.CreateEndPointRoute(handler)}}?{queryString}");
             """
         );
 

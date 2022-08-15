@@ -7,9 +7,9 @@
 		<RootNamespace>Cblx.Blocks</RootNamespace>
 	</PropertyGroup>
 
-	<!--<ItemGroup>
+	<ItemGroup>
 		<Compile Include="..\Abstractions\GenerateClientAttribute.cs" Link="LinkedAttributes\GenerateClientAttribute.cs" />
-	</ItemGroup>-->
+	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.2.0" PrivateAssets="all" />
@@ -21,7 +21,6 @@
 
 	<ItemGroup>
 		<!-- Package the generator in the analyzer directory of the nuget package -->
-		<ProjectReference Include="..\Abstractions\Cblx.Blocks.HandlerBase.Abstractions.csproj" />
 		<None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
 	</ItemGroup>
 
