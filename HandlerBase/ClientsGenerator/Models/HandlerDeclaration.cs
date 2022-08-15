@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Cblx.Blocks.Models;
+﻿namespace Cblx.Blocks.Models;
 
 internal sealed class HandlerDeclaration
 {
@@ -28,7 +26,7 @@ internal sealed class HandlerDeclaration
 
 	public string CreateAsyncToken()
 	{
-		return HandlerAction.ReturnDeclaration.HasAsync ? " async " : "";
+		return HandlerAction.ReturnDeclaration.HasAsync ? "async" : "";
 	}
 	
 

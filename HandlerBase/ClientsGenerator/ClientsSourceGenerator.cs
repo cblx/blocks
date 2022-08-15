@@ -3,7 +3,7 @@ using Cblx.Blocks.Finders;
 using Cblx.Blocks.Templates;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using System.Diagnostics;
+//using System.Diagnostics;
 using System.Linq;
 
 namespace Cblx.Blocks;
@@ -17,12 +17,12 @@ public class ClientsSourceGenerator : ISourceGenerator
         //Register here - aditional source code suporte
         context.AddSource("QueryStringHelper.g.cs", QueryStringHelperTemplate.Source);
 
-#if DEBUG
-        if (!Debugger.IsAttached)
-        {
-            Debugger.Launch();
-        }
-#endif
+//#if DEBUG
+//        if (!Debugger.IsAttached)
+//        {
+//            Debugger.Launch();
+//        }
+//#endif
 
         if (context.SyntaxReceiver is not HandlerFinder handlerFinder) return;
 

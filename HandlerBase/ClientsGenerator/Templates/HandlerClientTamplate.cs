@@ -1,7 +1,6 @@
 ﻿using Cblx.Blocks.Enums;
 using Cblx.Blocks.Helpers;
 using Cblx.Blocks.Models;
-using System.Net;
 using System.Text;
 
 namespace Cblx.Blocks.Templates;
@@ -22,7 +21,7 @@ internal static class HandlerClientTamplate
             public class {{handler.ImplementationName}}Client : {{handler.InterfaceName}}
             {
                 private readonly HttpClient _httpClient;
-                public {{handler.ImplementationName}}(HttpClient httpClient)
+                public {{handler.ImplementationName}}Client(HttpClient httpClient)
                 {
                     _httpClient = httpClient;
                 }
@@ -67,7 +66,7 @@ internal static class HandlerClientTamplate
 
         builder.AppendLine($$"""
                     var queryString = QueryStringHelper.ToQueryString({{handler.HandlerAction.ParameterDeclaration.Name}});
-                    return (await _httpClient.GetFromJsonAsync<{{handler.HandlerAction.ReturnDeclaration.ManipulationFormat}}>($"{{StringHelper.CreateEndPointRoute(handler)}}?{queryString}"))!;"
+                    return (await _httpClient.GetFromJsonAsync<{{handler.HandlerAction.ReturnDeclaration.ManipulationFormat}}>($"{{StringHelper.CreateEndPointRoute(handler)}}?{queryString}"))!;
             """);
     }
 
