@@ -1,4 +1,5 @@
-﻿using Cblx.Blocks.Factories;
+﻿using Cblx.Blocks.Configuration;
+using Cblx.Blocks.Factories;
 using Cblx.Blocks.Finders;
 using Cblx.Blocks.Templates;
 using Microsoft.CodeAnalysis;
@@ -36,9 +37,12 @@ public class ClientsSourceGenerator : ISourceGenerator
 
     private static void CreateAndRegisterClientsInContext(InterfaceDeclarationSyntax[] interfaceDeclarations, GeneratorExecutionContext context)
     {
+        var clientGeneratorSettingBuilder = new ClientGeneratorSettingsBuilder(context.Compilation.Assembly);
+        var handlerFactory = new HandlerDeclarationFactory(clientGeneratorSettingBuilder, context);
+
         foreach (InterfaceDeclarationSyntax interfaceDeclaration in interfaceDeclarations)
         {
-            var handler = HandlerDeclarationFactory.CreateOrDefault(interfaceDeclaration);
+            var handler = handlerFactory.CreateOrDefault(interfaceDeclaration);
             if (handler is null) continue;
 
             var code = HandlerClientTamplate.Create(handler);

@@ -9,6 +9,9 @@ internal static class AttributeHelper
     public static bool ContainsGenerateClientAttribute(InterfaceDeclarationSyntax interfaceDeclaration)
         => CreateQueryInternal(interfaceDeclaration).Any();
 
+    public static AttributeSyntax GetGenerateClientAttribute(InterfaceDeclarationSyntax interfaceDeclaration)
+        => CreateQueryInternal(interfaceDeclaration).FirstOrDefault();
+
     private static IEnumerable<AttributeSyntax> CreateQueryInternal(InterfaceDeclarationSyntax interfaceDeclaration)
         => interfaceDeclaration
             .AttributeLists
