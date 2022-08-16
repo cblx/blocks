@@ -9,14 +9,13 @@ internal static class AttributeHelper
     public static bool ContainsGenerateClientAttribute(InterfaceDeclarationSyntax interfaceDeclaration)
         => CreateQueryInternal(interfaceDeclaration).Any();
 
-    public static AttributeSyntax GetGenerateClientAttribute(InterfaceDeclarationSyntax interfaceDeclaration)
+    public static AttributeSyntax? GetGenerateClientAttribute(InterfaceDeclarationSyntax interfaceDeclaration)
         => CreateQueryInternal(interfaceDeclaration).FirstOrDefault();
 
-    private static IEnumerable<AttributeSyntax> CreateQueryInternal(InterfaceDeclarationSyntax interfaceDeclaration)
+    private static IEnumerable<AttributeSyntax> CreateQueryInternal(MemberDeclarationSyntax interfaceDeclaration)
         => interfaceDeclaration
             .AttributeLists
             .SelectMany(attrList => attrList.Attributes)
-            .Where(attr => attr.ToFullString().Contains("GenerateClient"))
-            .OfType<AttributeSyntax>();
+            .Where(attr => attr.ToFullString().Contains("GenerateClient"));
     
 }

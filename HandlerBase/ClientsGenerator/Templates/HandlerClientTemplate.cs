@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Cblx.Blocks.Templates;
 
-internal static class HandlerClientTamplate
+internal static class HandlerClientTemplate
 {
     public static string Create(HandlerDeclaration handler)
     {

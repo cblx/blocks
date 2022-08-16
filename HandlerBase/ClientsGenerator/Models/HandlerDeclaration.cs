@@ -16,13 +16,13 @@ internal sealed class HandlerDeclaration
 		HandlerAction = handlerAction;
 	}
 
-	public string InterfaceName { get; private set; }
-	public string ImplementationName { get; private set; }
-    public string HandlerNamespace { get; private set; }
-	public string? RoutePrefix { get; private set; }
+	public string InterfaceName { get; }
+	public string ImplementationName { get; }
+    public string HandlerNamespace { get; }
+	public string? RoutePrefix { get; }
 
 
-	public HandlerActionDeclaration HandlerAction { get; private set; }
+	public HandlerActionDeclaration HandlerAction { get; }
 
 	public string CreateAsyncToken()
 	{

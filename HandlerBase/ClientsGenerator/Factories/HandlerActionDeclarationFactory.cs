@@ -15,11 +15,11 @@ internal static class HandlerActionDeclarationFactory
         var handlerReturnDeclaration = HandlerReturnDeclarationFactory.Create(methodDeclaration);
         var handlerParameterDeclaration = HandlerParameterDeclarationFactory.CreateOrDefault(methodDeclaration);
 
-
         return new HandlerActionDeclaration(
             methodDeclaration.Identifier.ValueText, 
             verb, 
             handlerReturnDeclaration, 
-            handlerParameterDeclaration);
+            handlerParameterDeclaration
+        );
     } 
 }

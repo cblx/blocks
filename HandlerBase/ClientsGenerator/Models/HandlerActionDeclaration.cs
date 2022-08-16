@@ -16,9 +16,9 @@ internal sealed class HandlerActionDeclaration
 		ParameterDeclaration = parameterDeclaration;
 	}
 
-	public string Name { get; private set; }
-	public HttpVerb Verb { get; private set; }
+	public string Name { get; }
+	public HttpVerb Verb { get; }
 
-	public HandlerReturnDeclaration ReturnDeclaration { get; private set; }	
-	public HandlerParameterDeclaration? ParameterDeclaration { get; private set; }
+	public HandlerReturnDeclaration ReturnDeclaration { get; }	
+	public HandlerParameterDeclaration? ParameterDeclaration { get; }
 }

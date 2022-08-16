@@ -8,11 +8,13 @@ internal static class MethodDeclarationSyntaxExtension
 {
     public static HttpVerb IdentifyHttpVerb(this MethodDeclarationSyntax symbol)
     {
-        return symbol.Identifier.Text switch
+        var possibleVerb = symbol.Identifier.Text.Trim();
+        
+        return possibleVerb switch
         {
-            var content when content.StartsWith("Get") => HttpVerb.Get,
-            var content when content.StartsWith("Post") => HttpVerb.Post,
-            var content when content.StartsWith("Delete") => HttpVerb.Delete,
+            _ when possibleVerb.StartsWith("Get") => HttpVerb.Get,
+            _ when possibleVerb.StartsWith("Post") => HttpVerb.Post,
+            _ when possibleVerb.StartsWith("Delete") => HttpVerb.Delete,
             _ => HttpVerb.Unknown
         };
     }

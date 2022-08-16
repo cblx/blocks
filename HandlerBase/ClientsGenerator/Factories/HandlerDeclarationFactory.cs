@@ -1,6 +1,5 @@
 ﻿using Cblx.Blocks.Configuration;
 using Cblx.Blocks.Extensions;
-using Cblx.Blocks.Helpers;
 using Cblx.Blocks.Models;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -37,15 +36,15 @@ internal class HandlerDeclarationFactory
         return new HandlerDeclaration(name, handlerNamespace, handlerAction,clientGeneratorSettings?.RoutePrefix);
     }
 
-    public ClientGeneratorSettings? GetClientGeneratorProperties(InterfaceDeclarationSyntax interfaceDeclaration)
+    private ClientGeneratorSettings? GetClientGeneratorProperties(SyntaxNode interfaceDeclaration)
     {
         var semanticModel = _context.Compilation.GetSemanticModel(interfaceDeclaration.SyntaxTree);
-
         var interfaceSymbol = semanticModel.GetDeclaredSymbol(interfaceDeclaration, _context.CancellationToken);
-
-        if (interfaceSymbol is not INamedTypeSymbol namedInterfaceSymbol) return null;
-
-        return _clientGeneratorPropertiesBuilder.Build(namedInterfaceSymbol);
+        
+        return interfaceSymbol is not INamedTypeSymbol namedInterfaceSymbol ? 
+            null 
+            : 
+            _clientGeneratorPropertiesBuilder.Build(namedInterfaceSymbol);
     }
     
 }

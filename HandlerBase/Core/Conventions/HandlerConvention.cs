@@ -8,7 +8,7 @@ public class HandlerConvention : IApplicationModelConvention
     {
         foreach (var action in application.Controllers.SelectMany(ac => ac.Actions))
         {
-            string? verb = GetHttpMethodVerb(action.ActionName);
+            var verb = GetHttpMethodVerb(action.ActionName);
             ConfigureActionConstraintByHttpVerb(action, verb);
             ConfigureBidingSourceByHttpVerb(action, verb);
         }
@@ -17,9 +17,9 @@ public class HandlerConvention : IApplicationModelConvention
     private static string? GetHttpMethodVerb(string actionName)
         => actionName switch
         {
-            var x when x.StartsWith("Post") => "POST",
-            var x when x.StartsWith("Get") => "GET",
-            var x when x.StartsWith("Delete") => "DELETE",
+            _ when actionName.StartsWith("Post") => "POST",
+            _ when actionName.StartsWith("Get") => "GET",
+            _ when actionName.StartsWith("Delete") => "DELETE",
             _ => default
         };
 

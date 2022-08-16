@@ -16,7 +16,7 @@ internal sealed class ClientGeneratorSettingsBuilder
 
     public ClientGeneratorSettings? Build(ISymbol builderSymbol)
     {
-        if ((GetClientGeneratorConfigurationOrDefault(builderSymbol) ?? _globalParameters) is not ImmutableArray<KeyValuePair<string, TypedConstant>> attributeParameters)
+        if ((GetClientGeneratorConfigurationOrDefault(builderSymbol) ?? _globalParameters) is not { } attributeParameters)
             return null;
 
         var prefixRoute = attributeParameters.GetOrDefault<string>(nameof(ClientGeneratorSettings.RoutePrefix));
@@ -26,12 +26,10 @@ internal sealed class ClientGeneratorSettingsBuilder
 
     private static ImmutableArray<KeyValuePair<string, TypedConstant>>? GetClientGeneratorConfigurationOrDefault(ISymbol context)
     {
-        var attributeDatas = context.GetAttributes();
-        var attribute = attributeDatas.Where(x => x.AttributeClass.HasNameOrBaseClassHas(nameof(GenerateClientAttribute))).SingleOrDefault();
+        var attributesData = context.GetAttributes();
+        var attribute = attributesData.SingleOrDefault(x => x.AttributeClass.HasNameOrBaseClassHas(nameof(GenerateClientAttribute)));
         
-        if(attribute is null) return null;
-        if (attribute.NamedArguments.Length <= 0) return null;
-
-        return attribute?.NamedArguments;
+        if (attribute is null) return null;
+        return attribute.NamedArguments.Length <= 0 ? null : attribute.NamedArguments;
     }
 }

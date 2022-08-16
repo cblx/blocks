@@ -9,7 +9,7 @@ internal class HandlerParameterDeclaration
         MethodParameterFormat = methodParameterFormat;
     }
 
-    public string Name { get; private set; }
-    public string TypeName { get; private set; }
-    public string MethodParameterFormat { get; private set; }
+    public string Name { get; }
+    public string TypeName { get; }
+    public string MethodParameterFormat { get; }
 }

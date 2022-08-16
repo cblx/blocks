@@ -3,7 +3,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Cblx.Blocks.Factories;
 
-internal class HandlerParameterDeclarationFactory
+internal static class HandlerParameterDeclarationFactory
 {
     public static HandlerParameterDeclaration? CreateOrDefault(MethodDeclarationSyntax methodDeclarationSyntax)
     {

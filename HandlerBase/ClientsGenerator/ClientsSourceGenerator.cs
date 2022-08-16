@@ -15,7 +15,7 @@ public class ClientsSourceGenerator : ISourceGenerator
   
     public void Execute(GeneratorExecutionContext context)
     {
-        //Register here - aditional source code suporte
+        //Register here - source code 
         context.AddSource("QueryStringHelper.g.cs", QueryStringHelperTemplate.Source);
 
 //#if DEBUG
@@ -45,7 +45,7 @@ public class ClientsSourceGenerator : ISourceGenerator
             var handler = handlerFactory.CreateOrDefault(interfaceDeclaration);
             if (handler is null) continue;
 
-            var code = HandlerClientTamplate.Create(handler);
+            var code = HandlerClientTemplate.Create(handler);
             context.AddSource($"{handler.ImplementationName}Client.g.cs", code);
         }
     }

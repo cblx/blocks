@@ -16,10 +16,10 @@ internal class HandlerReturnDeclaration
         HasAsync = hasAsync;
     }
 
-    public string TypeName { get; private set; }
-    public string MethodReturnFormat { get; private set; }
-    public string ManipulationFormat { get; private set; }
+    public string TypeName { get; }
+    public string MethodReturnFormat { get; }
+    public string ManipulationFormat { get; }
 
-    public bool HasVoid { get; private set; }
-    public bool HasAsync { get; private set; }
+    public bool HasVoid { get; }
+    public bool HasAsync { get; }
 }

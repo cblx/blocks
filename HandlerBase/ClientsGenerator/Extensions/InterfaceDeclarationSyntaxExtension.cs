@@ -1,5 +1,4 @@
 ﻿using Cblx.Blocks.Enums;
-using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Linq;
 
@@ -13,8 +12,7 @@ internal static class InterfaceDeclarationSyntaxExtension
             .Members
             .OfType<MethodDeclarationSyntax>()
             .Where(method => method.IsPublicHandlerAction())
-            .Where(p => p.IdentifyHttpVerb() != HttpVerb.Unknown)
-            .FirstOrDefault();
+            .FirstOrDefault(p => p.IdentifyHttpVerb() is not HttpVerb.Unknown);
     }
 
     

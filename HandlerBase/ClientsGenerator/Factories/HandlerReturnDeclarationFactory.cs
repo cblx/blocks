@@ -1,10 +1,8 @@
-﻿using Cblx.Blocks.Helpers;
+﻿using System.Collections.Generic;
+using Cblx.Blocks.Helpers;
 using Cblx.Blocks.Models;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using System;
-using System.Linq;
-using System.Text;
 
 namespace Cblx.Blocks.Factories;
 
@@ -12,7 +10,7 @@ internal static class HandlerReturnDeclarationFactory
 {
     public static HandlerReturnDeclaration Create(MethodDeclarationSyntax methodDeclarationSyntax)
     {
-        var returnMethodTree = methodDeclarationSyntax.ReturnType.DescendantNodesAndTokensAndSelf().ToArray();
+        var returnMethodTree = methodDeclarationSyntax.ReturnType.DescendantNodesAndTokensAndSelf();
         var returnDeclaration = IdentifyAndProcessMethodReturnTree(returnMethodTree);
 
         return new HandlerReturnDeclaration(
@@ -20,13 +18,13 @@ internal static class HandlerReturnDeclarationFactory
             methodDeclarationSyntax.ReturnType.ToFullString(),
             returnDeclaration.ManipulationFormat,
             returnDeclaration.HasVoid,
-            returnDeclaration.HasAsync);
-
+            returnDeclaration.HasAsync
+        );
     }
 
-    private static ReturnDeclaration IdentifyAndProcessMethodReturnTree(SyntaxNodeOrToken[] tree)
+    private static ReturnDeclarationDto IdentifyAndProcessMethodReturnTree(IEnumerable<SyntaxNodeOrToken> tree)
     {
-        var returnDeclaration = new ReturnDeclaration();
+        var returnDeclaration = new ReturnDeclarationDto();
 
         foreach (var nodeOrToken in tree)
         {
@@ -41,11 +39,10 @@ internal static class HandlerReturnDeclarationFactory
     }      
 }
 
-internal record ReturnDeclaration
+internal record ReturnDeclarationDto
 {
     public string TypeName { get; set; } = string.Empty;
     public string ManipulationFormat { get; set; } = string.Empty;
-
     public bool HasVoid { get; set; }
     public bool HasAsync { get; set; }
 }

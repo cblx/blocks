@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Cblx.Blocks.Extensions;
 
-internal static class AttributeContructorParametersExtensions
+internal static class AttributeConstructorParametersExtensions
 {
     public static T GetOrThrow<T>(this in ImmutableArray<TypedConstant> attributeParameters, int index, string propertyName)
        => (T)(attributeParameters[index].Value ?? throw new ConfigurationException($"{propertyName} cannot be null."));

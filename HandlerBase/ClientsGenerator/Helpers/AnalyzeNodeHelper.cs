@@ -6,73 +6,71 @@ namespace Cblx.Blocks.Helpers;
 
 internal static class AnalyzeNodeHelper
 {
-    public static void Analyze(ReturnDeclaration declaration, SyntaxNode? node)
+    public static void Analyze(ReturnDeclarationDto declarationDto, SyntaxNode? node)
     {
         switch (node)
         {
-            case IdentifierNameSyntax syntax: declaration.ProcessIdentifierNameSyntax(syntax); break;
-            case GenericNameSyntax syntax: declaration.ProcessGenericNameSyntax(syntax); break;
-            case ArrayTypeSyntax syntax: declaration.ProcessArrayTypeSyntax(syntax); break;
+            case IdentifierNameSyntax syntax: declarationDto.ProcessIdentifierNameSyntax(syntax); break;
+            case GenericNameSyntax syntax: declarationDto.ProcessGenericNameSyntax(syntax); break;
+            case ArrayTypeSyntax syntax: declarationDto.ProcessArrayTypeSyntax(syntax); break;
         }
     }
 
-    private static void ProcessIdentifierNameSyntax(this ReturnDeclaration declaration, IdentifierNameSyntax syntax)
+    private static void ProcessIdentifierNameSyntax(this ReturnDeclarationDto declarationDto, IdentifierNameSyntax syntax)
     {
+        var name = syntax.Identifier.Text.Trim();
 
-        switch (syntax.Identifier.Text)
+        switch (name)
         {
-            case var typeName when
-                 typeName.StartsWith("Task") ||
-                 typeName.StartsWith("ValueTask"):
-                declaration.ProcessTaskOrValueTaskType(syntax); return;
+            case var _ when name.StartsWith("Task") || name.StartsWith("ValueTask"):
+                declarationDto.ProcessTaskOrValueTaskType(syntax); return;
         }
 
-        declaration.TypeName = syntax.Identifier.Text.Trim();
-        declaration.HasVoid = false;
+        declarationDto.TypeName = name;
+        declarationDto.HasVoid = false;
 
-        if (!declaration.ManipulationFormat.Contains(declaration.TypeName))
+        if (!declarationDto.ManipulationFormat.Contains(name))
         {
-            declaration.ManipulationFormat = declaration.TypeName;
-        }
-    }
-
-    private static void ProcessArrayTypeSyntax(this ReturnDeclaration declaration, ArrayTypeSyntax syntax)
-    {
-        declaration.TypeName = syntax.ToFullString().Trim();
-
-        if (!declaration.ManipulationFormat.Contains(declaration.TypeName))
-        {
-            declaration.ManipulationFormat = declaration.TypeName;
+            declarationDto.ManipulationFormat = name;
         }
     }
 
-    private static void ProcessGenericNameSyntax(this ReturnDeclaration declaration, GenericNameSyntax syntax)
+    private static void ProcessArrayTypeSyntax(this ReturnDeclarationDto declarationDto, ArrayTypeSyntax syntax)
     {
-        switch (syntax.Identifier.Text)
-        {
-            case var typeName when
-                 typeName.StartsWith("Task") ||
-                 typeName.StartsWith("ValueTask"):
-                declaration.ProcessTaskOrValueTaskType(syntax); break;
+        declarationDto.TypeName = syntax.ToFullString().Trim();
 
-            case var typeName when typeName.StartsWith("IEnumerable"):
-                declaration.ProcessIEnumerableType(syntax); break;
+        if (!declarationDto.ManipulationFormat.Contains(declarationDto.TypeName))
+        {
+            declarationDto.ManipulationFormat = declarationDto.TypeName;
         }
     }
 
-    private static void ProcessTaskOrValueTaskType(this ReturnDeclaration declaration, SyntaxNode syntax)
+    private static void ProcessGenericNameSyntax(this ReturnDeclarationDto declarationDto, GenericNameSyntax syntax)
     {
-        declaration.HasAsync = true;
-        declaration.HasVoid = true;
-        declaration.TypeName = syntax.ToFullString();
+        var genericName = syntax.Identifier.Text.Trim();
+        
+        switch (genericName)
+        {
+            case var _ when genericName.StartsWith("Task") || genericName.StartsWith("ValueTask"):
+                declarationDto.ProcessTaskOrValueTaskType(syntax); break;
+
+            case var _ when genericName.StartsWith("IEnumerable"):
+                declarationDto.ProcessIEnumerableType(syntax); break;
+        }
     }
 
-    private static void ProcessIEnumerableType(this ReturnDeclaration declaration, SyntaxNode syntax)
+    private static void ProcessTaskOrValueTaskType(this ReturnDeclarationDto declarationDto, SyntaxNode syntax)
     {
-        if (!declaration.ManipulationFormat.Contains(syntax.ToFullString()))
-        {
-            declaration.ManipulationFormat = syntax.ToFullString();
-            declaration.HasVoid = false;
-        }
+        declarationDto.HasAsync = true;
+        declarationDto.HasVoid = true;
+        declarationDto.TypeName = syntax.ToFullString();
+    }
+
+    private static void ProcessIEnumerableType(this ReturnDeclarationDto declarationDto, SyntaxNode syntax)
+    {
+        if (declarationDto.ManipulationFormat.Contains(syntax.ToFullString())) return;
+        
+        declarationDto.ManipulationFormat = syntax.ToFullString();
+        declarationDto.HasVoid = false;
     }
 }
