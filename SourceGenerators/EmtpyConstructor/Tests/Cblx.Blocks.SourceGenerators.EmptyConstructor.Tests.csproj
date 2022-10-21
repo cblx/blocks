@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Core\Cblx.Blocks.SourceGenerators.EmptyConstructor.Abstractions.csproj" />
+    <ProjectReference Include="..\Abstractions\Cblx.Blocks.SourceGenerators.EmptyConstructor.Abstractions.csproj" />
     <ProjectReference Include="..\Generator\Cblx.Blocks.SourceGenerators.EmptyConstructor.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
   </ItemGroup>
 

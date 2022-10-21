@@ -17,7 +17,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\Core\Cblx.Blocks.SourceGenerators.EmptyConstructor.Abstractions.csproj" />
+	  <ProjectReference Include="..\Abstractions\Cblx.Blocks.SourceGenerators.EmptyConstructor.Abstractions.csproj" />
 	</ItemGroup>
 
 </Project>
