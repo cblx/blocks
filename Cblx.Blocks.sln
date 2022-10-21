@@ -7,11 +7,21 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "HandlerBase", "HandlerBase"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cblx.Blocks.HandlerBase", "HandlerBase\Core\Cblx.Blocks.HandlerBase.csproj", "{2E0682E5-C5C2-477C-83A0-FC2AC488BA8D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cblx.Blocks.HandlerBase.ClientsGenerator", "HandlerBase\ClientsGenerator\Cblx.Blocks.HandlerBase.ClientsGenerator.csproj", "{4D732C23-FD40-44C6-A87B-4ECC09FF0E7B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cblx.Blocks.HandlerBase.ClientsGenerator", "HandlerBase\ClientsGenerator\Cblx.Blocks.HandlerBase.ClientsGenerator.csproj", "{4D732C23-FD40-44C6-A87B-4ECC09FF0E7B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cblx.Blocks.HandlerBase.Tests", "HandlerBase\Tests\Cblx.Blocks.HandlerBase.Tests.csproj", "{12AEA67D-128D-44B9-AA22-B73CD151791D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cblx.Blocks.HandlerBase.Tests", "HandlerBase\Tests\Cblx.Blocks.HandlerBase.Tests.csproj", "{12AEA67D-128D-44B9-AA22-B73CD151791D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cblx.Blocks.HandlerBase.Abstractions", "HandlerBase\Abstractions\Cblx.Blocks.HandlerBase.Abstractions.csproj", "{43BF2521-CFFD-49DD-998E-B30D6F844771}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cblx.Blocks.HandlerBase.Abstractions", "HandlerBase\Abstractions\Cblx.Blocks.HandlerBase.Abstractions.csproj", "{43BF2521-CFFD-49DD-998E-B30D6F844771}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SourceGenerators", "SourceGenerators", "{64CC5228-08E2-4BDA-BA3B-0C7CFC7D639E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EmptyConstructor", "EmptyConstructor", "{1374FE05-46C8-4609-A6B0-42C218B86C4E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cblx.Blocks.SourceGenerators.EmptyConstructor.Abstractions", "SourceGenerators\EmtpyConstructor\Core\Cblx.Blocks.SourceGenerators.EmptyConstructor.Abstractions.csproj", "{8EB86797-B4E2-49F9-B703-CDB46D096C20}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cblx.Blocks.SourceGenerators.EmptyConstructor", "SourceGenerators\EmtpyConstructor\Generator\Cblx.Blocks.SourceGenerators.EmptyConstructor.csproj", "{95DA746D-8D18-483C-A89B-C9626EF1699A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cblx.Blocks.SourceGenerators.EmptyConstructor.Tests", "SourceGenerators\EmtpyConstructor\Tests\Cblx.Blocks.SourceGenerators.EmptyConstructor.Tests.csproj", "{5F5E4510-FDAA-485D-A61B-5E92EC589488}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,6 +45,18 @@ Global
 		{43BF2521-CFFD-49DD-998E-B30D6F844771}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{43BF2521-CFFD-49DD-998E-B30D6F844771}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{43BF2521-CFFD-49DD-998E-B30D6F844771}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8EB86797-B4E2-49F9-B703-CDB46D096C20}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8EB86797-B4E2-49F9-B703-CDB46D096C20}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8EB86797-B4E2-49F9-B703-CDB46D096C20}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8EB86797-B4E2-49F9-B703-CDB46D096C20}.Release|Any CPU.Build.0 = Release|Any CPU
+		{95DA746D-8D18-483C-A89B-C9626EF1699A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{95DA746D-8D18-483C-A89B-C9626EF1699A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{95DA746D-8D18-483C-A89B-C9626EF1699A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{95DA746D-8D18-483C-A89B-C9626EF1699A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5F5E4510-FDAA-485D-A61B-5E92EC589488}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F5E4510-FDAA-485D-A61B-5E92EC589488}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F5E4510-FDAA-485D-A61B-5E92EC589488}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F5E4510-FDAA-485D-A61B-5E92EC589488}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -44,6 +66,10 @@ Global
 		{4D732C23-FD40-44C6-A87B-4ECC09FF0E7B} = {131DAEF0-5005-4D3A-B6A9-CE6E65967498}
 		{12AEA67D-128D-44B9-AA22-B73CD151791D} = {131DAEF0-5005-4D3A-B6A9-CE6E65967498}
 		{43BF2521-CFFD-49DD-998E-B30D6F844771} = {131DAEF0-5005-4D3A-B6A9-CE6E65967498}
+		{1374FE05-46C8-4609-A6B0-42C218B86C4E} = {64CC5228-08E2-4BDA-BA3B-0C7CFC7D639E}
+		{8EB86797-B4E2-49F9-B703-CDB46D096C20} = {1374FE05-46C8-4609-A6B0-42C218B86C4E}
+		{95DA746D-8D18-483C-A89B-C9626EF1699A} = {1374FE05-46C8-4609-A6B0-42C218B86C4E}
+		{5F5E4510-FDAA-485D-A61B-5E92EC589488} = {1374FE05-46C8-4609-A6B0-42C218B86C4E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E5FB98E3-504F-4E59-A466-98DE782B28CA}
