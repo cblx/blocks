@@ -1,5 +1,4 @@
 ﻿using Cblx.Blocks.Enums;
-using Cblx.Blocks.Factories;
 using Cblx.Blocks.Helpers;
 using Cblx.Blocks.Models;
 using System.Text;
@@ -96,7 +95,7 @@ internal static class HandlerClientTemplate
         if (handler.HandlerAction.ParameterDeclaration is null) return;        
 
         builder.AppendLine($$"""
-                    var queryString = QueryStringHelper.ToQueryString({handler.HandlerAction.ParameterDeclaration.Name});
+                    var queryString = QueryStringHelper.ToQueryString({{handler.HandlerAction.ParameterDeclaration.Name}});
                     var responseMessage = await _httpClient.DeleteAsync($"{{StringHelper.CreateEndPointRoute(handler)}}?{queryString}");
             """
         );
