@@ -3,7 +3,7 @@
 namespace Cblx.Blocks.Testing.Xunit;
 
 /// <summary>
-/// Teste conectado a um Dynamics
+/// The test runs for a long time
 /// </summary>
 [TraitDiscoverer("Cblx.Blocks.Testing.Xunit.LongRunningDiscoverer", "Cblx.Blocks.Testing.Xunit")]
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
