@@ -3,7 +3,6 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 
 namespace EmptyConstructor
@@ -19,6 +18,7 @@ namespace EmptyConstructor
             {
                 SemanticModel model = context.Compilation.GetSemanticModel(classDeclarationSyntax.SyntaxTree);
                 if (model.GetDeclaredSymbol(classDeclarationSyntax) is not ITypeSymbol symbol) { continue; }
+#pragma warning disable S2479 // Whitespace and control characters in string literals should be explicit
                 string source = $$"""
                     using System.Diagnostics.CodeAnalysis;
                         
@@ -32,6 +32,7 @@ namespace EmptyConstructor
                     #pragma warning restore CS8618
                     }
                     """;
+#pragma warning restore S2479 // Whitespace and control characters in string literals should be explicit
                 context.AddSource($"{symbol.Name}.g.cs", source);
             }
         }
@@ -63,7 +64,6 @@ namespace EmptyConstructor
                     .AttributeLists
                     .SelectMany(list => list.Attributes)
                     .Any(a => a.Name.ToString() == _attributeName);
-                //if (attrListText.Contains(_attributeName))
                 if (hasHasObsoleteEmptyConstructorAttribute)
                 {
                     Classes.Add(classDeclarationSyntax);

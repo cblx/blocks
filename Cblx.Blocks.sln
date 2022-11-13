@@ -30,7 +30,18 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Testing", "Testing", "{8F72
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Xunit", "Xunit", "{5D301BB4-ADE1-48E4-8AA1-A62C859AFA36}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cblx.Blocks.Testing.Xunit", "Testing\Xunit\Cblx.Blocks.Testing.Xunit.csproj", "{1C410AE4-7578-4532-9ACB-C5B3F36C9CB5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cblx.Blocks.Testing.Xunit", "Testing\Xunit\Cblx.Blocks.Testing.Xunit.csproj", "{1C410AE4-7578-4532-9ACB-C5B3F36C9CB5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DependencyInjection", "DependencyInjection", "{EC0FB4AB-0B99-4CDD-8E20-2F65AC51A2F4}"
+	ProjectSection(SolutionItems) = preProject
+		SourceGenerators\DependencyInjection\README.MD = SourceGenerators\DependencyInjection\README.MD
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cblx.Blocks.SourceGenerators.DependencyInjection", "SourceGenerators\DependencyInjection\Generator\Cblx.Blocks.SourceGenerators.DependencyInjection.csproj", "{03B0D56C-7E41-46D8-94AD-2417972A7226}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cblx.Blocks.SourceGenerators.DependencyInjection.Abstractions", "SourceGenerators\DependencyInjection\Abstractions\Cblx.Blocks.SourceGenerators.DependencyInjection.Abstractions.csproj", "{5686510D-7D65-493B-8EBA-E6FA794A8593}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cblx.Blocks.SourceGenerators.DependencyInjection.Tests", "SourceGenerators\DependencyInjection\Tests\Cblx.Blocks.SourceGenerators.DependencyInjection.Tests.csproj", "{ABA341E5-BEBD-43F7-9118-7948BECDB40C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -70,6 +81,18 @@ Global
 		{1C410AE4-7578-4532-9ACB-C5B3F36C9CB5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1C410AE4-7578-4532-9ACB-C5B3F36C9CB5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1C410AE4-7578-4532-9ACB-C5B3F36C9CB5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{03B0D56C-7E41-46D8-94AD-2417972A7226}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{03B0D56C-7E41-46D8-94AD-2417972A7226}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{03B0D56C-7E41-46D8-94AD-2417972A7226}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{03B0D56C-7E41-46D8-94AD-2417972A7226}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5686510D-7D65-493B-8EBA-E6FA794A8593}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5686510D-7D65-493B-8EBA-E6FA794A8593}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5686510D-7D65-493B-8EBA-E6FA794A8593}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5686510D-7D65-493B-8EBA-E6FA794A8593}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ABA341E5-BEBD-43F7-9118-7948BECDB40C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ABA341E5-BEBD-43F7-9118-7948BECDB40C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ABA341E5-BEBD-43F7-9118-7948BECDB40C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ABA341E5-BEBD-43F7-9118-7948BECDB40C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -85,6 +108,10 @@ Global
 		{E1BABDF7-298B-4C4B-80D0-5FC2C849F0AF} = {1374FE05-46C8-4609-A6B0-42C218B86C4E}
 		{5D301BB4-ADE1-48E4-8AA1-A62C859AFA36} = {8F72AB4A-BAD4-49FE-B692-8E1DB5E3CC8B}
 		{1C410AE4-7578-4532-9ACB-C5B3F36C9CB5} = {5D301BB4-ADE1-48E4-8AA1-A62C859AFA36}
+		{EC0FB4AB-0B99-4CDD-8E20-2F65AC51A2F4} = {64CC5228-08E2-4BDA-BA3B-0C7CFC7D639E}
+		{03B0D56C-7E41-46D8-94AD-2417972A7226} = {EC0FB4AB-0B99-4CDD-8E20-2F65AC51A2F4}
+		{5686510D-7D65-493B-8EBA-E6FA794A8593} = {EC0FB4AB-0B99-4CDD-8E20-2F65AC51A2F4}
+		{ABA341E5-BEBD-43F7-9118-7948BECDB40C} = {EC0FB4AB-0B99-4CDD-8E20-2F65AC51A2F4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E5FB98E3-504F-4E59-A466-98DE782B28CA}
