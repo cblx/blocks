@@ -17,14 +17,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SourceGenerators", "SourceG
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EmptyConstructor", "EmptyConstructor", "{1374FE05-46C8-4609-A6B0-42C218B86C4E}"
 	ProjectSection(SolutionItems) = preProject
-		SourceGenerators\EmtpyConstructor\README.MD = SourceGenerators\EmtpyConstructor\README.MD
+		SourceGenerators\EmptyConstructor\README.MD = SourceGenerators\EmptyConstructor\README.MD
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cblx.Blocks.SourceGenerators.EmptyConstructor", "SourceGenerators\EmtpyConstructor\Generator\Cblx.Blocks.SourceGenerators.EmptyConstructor.csproj", "{95DA746D-8D18-483C-A89B-C9626EF1699A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cblx.Blocks.SourceGenerators.EmptyConstructor", "SourceGenerators\EmptyConstructor\Generator\Cblx.Blocks.SourceGenerators.EmptyConstructor.csproj", "{95DA746D-8D18-483C-A89B-C9626EF1699A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cblx.Blocks.SourceGenerators.EmptyConstructor.Tests", "SourceGenerators\EmtpyConstructor\Tests\Cblx.Blocks.SourceGenerators.EmptyConstructor.Tests.csproj", "{5F5E4510-FDAA-485D-A61B-5E92EC589488}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cblx.Blocks.SourceGenerators.EmptyConstructor.Tests", "SourceGenerators\EmptyConstructor\Tests\Cblx.Blocks.SourceGenerators.EmptyConstructor.Tests.csproj", "{5F5E4510-FDAA-485D-A61B-5E92EC589488}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cblx.Blocks.SourceGenerators.EmptyConstructor.Abstractions", "SourceGenerators\EmtpyConstructor\Abstractions\Cblx.Blocks.SourceGenerators.EmptyConstructor.Abstractions.csproj", "{E1BABDF7-298B-4C4B-80D0-5FC2C849F0AF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cblx.Blocks.SourceGenerators.EmptyConstructor.Abstractions", "SourceGenerators\EmptyConstructor\Abstractions\Cblx.Blocks.SourceGenerators.EmptyConstructor.Abstractions.csproj", "{E1BABDF7-298B-4C4B-80D0-5FC2C849F0AF}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Testing", "Testing", "{8F72AB4A-BAD4-49FE-B692-8E1DB5E3CC8B}"
 EndProject
