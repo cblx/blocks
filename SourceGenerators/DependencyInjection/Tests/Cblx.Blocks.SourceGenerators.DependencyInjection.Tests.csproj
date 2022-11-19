@@ -24,6 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Common\TestHelpers\Cblx.Blocks.SourceGenerators.TestHelpers.csproj" />
     <ProjectReference Include="..\Generator\Cblx.Blocks.SourceGenerators.DependencyInjection.csproj" />
   </ItemGroup>
 

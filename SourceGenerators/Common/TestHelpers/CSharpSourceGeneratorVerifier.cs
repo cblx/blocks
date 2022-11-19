@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis.CSharp.Testing;
 using Microsoft.CodeAnalysis.Testing.Verifiers;
 using System.Collections.Immutable;
 
-namespace Cblx.Blocks.SourceGenerators.DependencyInjection.Tests;
+namespace Cblx.Blocks.SourceGenerators;
 
 public static class CSharpSourceGeneratorVerifier<TSourceGenerator>
     where TSourceGenerator : ISourceGenerator, new()
