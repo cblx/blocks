@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Cblx.Blocks.Models;
 
 namespace Cblx.Blocks.Templates;
@@ -19,9 +20,9 @@ internal static class ServiceCollectionTemplate
         Services.Add($"services.AddScoped<{namespaceBase}.{contract}, {namespaceBase}.{service}Client>();");
     }
 
-    public static string Create(string assemblyName, string addServicesName)
+    public static string? CreateOrDefault(string assemblyName, string addServicesName)
     {
-        return $$"""
+        return Services.Any() is false ? null : $$"""
             // Auto-generated code
             using Microsoft.Extensions.DependencyInjection;
             using System.Diagnostics.CodeAnalysis;
@@ -29,7 +30,7 @@ internal static class ServiceCollectionTemplate
             namespace {{assemblyName}};
 
             [ExcludeFromCodeCoverage]
-            public static partial class ServiceCollectionExtensions
+            public static partial class ServiceCollectionExtensionsForClientHandlers
             {
                 public static IServiceCollection {{addServicesName}}(this IServiceCollection services)
                 {

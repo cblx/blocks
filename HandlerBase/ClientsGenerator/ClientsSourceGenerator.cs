@@ -56,9 +56,14 @@ public class ClientsSourceGenerator : ISourceGenerator
         var assemblyName = context.Compilation.AssemblyName!;
         var addServicesName = $"Add{assemblyName.Replace(".", "")}ClientHandlers";
 
-        var codeForService = ServiceCollectionTemplate.Create(assemblyName, addServicesName);
+        var codeForService = ServiceCollectionTemplate.CreateOrDefault(assemblyName, addServicesName);
+
+        if (string.IsNullOrEmpty(codeForService))
+        {
+            return;
+        }
         
-        context.AddSource("ServiceCollectionExtensionsForClientHandlers.g.cs", codeForService);
+        context.AddSource("ServiceCollectionExtensionsForClientHandlers.g.cs", codeForService!);
 
     }
 }
