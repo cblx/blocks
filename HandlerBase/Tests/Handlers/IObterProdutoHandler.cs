@@ -1,81 +1,69 @@
 ﻿namespace Cblx.Blocks.HandlerBase.Tests.Handlers;
 
+
+
 [GenerateClient(RoutePrefix = "prefix")]
-public interface IObterProdutoHandler1
+public interface IGetProductWithParameter
 {
     Task<ObterProdutoResponse> GetAsync(ObterProdutoRequest request);
 }
 
-[GenerateClient(RoutePrefix = "prefix")] 
-public interface IObterProdutoHandler2
-{
-    Task<ObterProdutoResponse[]> GetAsync(ObterProdutoRequest request);
-}
-
 [GenerateClient(RoutePrefix = "prefix")]
-public interface IObterProdutoHandler3
-{
-    Task<IEnumerable<ObterProdutoResponse>> GetAsync(ObterProdutoRequest request); 
-}
-
-[GenerateClient(RoutePrefix = "prefix")]
-public interface IObterProdutoHandler4
+public interface IGetProductWithoutParameter
 {
     Task<ObterProdutoResponse> GetAsync();
 }
 
-[GenerateClient(RoutePrefix = "prefix")]
-public interface IObterProdutoHandler5
-{
-    Task<ObterProdutoResponse[]> GetAsync();
-}
+
+
 
 [GenerateClient(RoutePrefix = "prefix")]
-public interface IObterProdutoHandler6
+public interface ICreateProductWithoutParameterWithoutResponseHandler
 {
-    Task<IEnumerable<ObterProdutoResponse>> GetAsync();
+    Task PostAsync();
 }
 
-[GenerateClient()]
-public interface IObterProdutoHandler7
+[GenerateClient(RoutePrefix = "prefix")]
+public interface ICreateProductWithoutParameterWithResponseHandler
 {
-    Task<ObterProdutoResponse> GetAsync(ObterProdutoRequest request);
+    Task<ObterProdutoResponse> PostAsync();
 }
 
-[GenerateClient()]
-public interface IObterProdutoHandler8
-{
-    Task<ObterProdutoResponse[]> GetAsync(ObterProdutoRequest request);
-}
-
-[GenerateClient()]
-public interface IObterProdutoHandler9
-{
-    Task<IEnumerable<ObterProdutoResponse>> GetAsync(ObterProdutoRequest request);
-}
-
-[GenerateClient()]
-public interface ICriarProdutoHandle1
-{
-    Task PostAsync(ObterProdutoRequest request);
-}
-
-[GenerateClient()]
-public interface ICriarProdutoHandler2
+[GenerateClient(RoutePrefix = "prefix")]
+public interface ICreateProductWithParameterWithResponseHandler
 {
     Task<ObterProdutoResponse> PostAsync(ObterProdutoRequest request);
 }
 
-[GenerateClient()]
-public interface IDeleteProdutoHandle1
+[GenerateClient(RoutePrefix = "prefix")]
+public interface ICreateProductWithParameterWithoutResponseHandler
 {
-    Task DeleteAsync(ObterProdutoRequest request);
+    Task PostAsync(ObterProdutoRequest request);
 }
 
-[GenerateClient()]
-public interface IDeleteProdutoHandler2
+
+
+
+[GenerateClient(RoutePrefix = "prefix")]
+public interface IDeleteProdutoWithParameterWithResponseHandler
 {
     Task<ObterProdutoResponse> DeleteAsync(ObterProdutoRequest request);
 }
 
+[GenerateClient(RoutePrefix = "prefix")]
+public interface IDeleteProdutoWithoutParameterWithResponseHandler
+{
+    Task<ObterProdutoResponse> DeleteAsync();
+}
 
+[GenerateClient(RoutePrefix = "prefix")]
+public interface IDeleteProdutoWithoutParameterWithoutResponseHandler
+{
+    Task DeleteAsync();
+}
+
+[GenerateClient(RoutePrefix = "prefix")]
+public interface IDeleteProdutoWithParameterWithoutResponseHandler
+{
+    Task DeleteAsync(ObterProdutoRequest request);
+}

@@ -1,4 +1,5 @@
-﻿using Cblx.Blocks.Configuration;
+﻿using System.Collections.Generic;
+using Cblx.Blocks.Configuration;
 using Cblx.Blocks.Factories;
 using Cblx.Blocks.Finders;
 using Cblx.Blocks.Templates;
@@ -29,17 +30,17 @@ public class ClientsSourceGenerator : ISourceGenerator
         CreateAndRegisterClientsInContext(handlerFinder.Handlers.ToArray(), context);
     }    
 
-    public void Initialize(GeneratorInitializationContext context)
-    {
-        context.RegisterForSyntaxNotifications(() => new HandlerFinder());
-    }
+    public void Initialize(GeneratorInitializationContext context) 
+        => context.RegisterForSyntaxNotifications(() => new HandlerFinder());
 
-    private static void CreateAndRegisterClientsInContext(InterfaceDeclarationSyntax[] interfaceDeclarations, GeneratorExecutionContext context)
+    private static void CreateAndRegisterClientsInContext(
+        IEnumerable<InterfaceDeclarationSyntax> interfaceDeclarations, 
+        GeneratorExecutionContext context)
     {
         var clientGeneratorSettingBuilder = new ClientGeneratorSettingsBuilder(context.Compilation.Assembly);
         var handlerFactory = new HandlerDeclarationFactory(clientGeneratorSettingBuilder, context);
 
-        foreach (InterfaceDeclarationSyntax interfaceDeclaration in interfaceDeclarations)
+        foreach (var interfaceDeclaration in interfaceDeclarations)
         {
             var handler = handlerFactory.CreateOrDefault(interfaceDeclaration);
             if (handler is null) continue;
