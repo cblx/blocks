@@ -9,10 +9,7 @@ internal sealed class HandlerFinder : ISyntaxReceiver
 {
     private readonly List<InterfaceDeclarationSyntax> _handlers;
 
-    public HandlerFinder()
-    {
-        _handlers = new List<InterfaceDeclarationSyntax>();
-    }
+    public HandlerFinder() => _handlers = new List<InterfaceDeclarationSyntax>();
 
     public IReadOnlyCollection<InterfaceDeclarationSyntax> Handlers => _handlers;
 

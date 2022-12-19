@@ -8,5 +8,4 @@ internal sealed class ClientGeneratorSettings
     }
 
     public string? RoutePrefix { get; private set; }
-   
 }

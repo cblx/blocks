@@ -9,6 +9,7 @@ namespace Cblx.Blocks.Configuration;
 internal sealed class ClientGeneratorSettingsBuilder
 {
     private readonly ImmutableArray<KeyValuePair<string, TypedConstant>>? _globalParameters;
+
     public ClientGeneratorSettingsBuilder(IAssemblySymbol context)
     {
         _globalParameters = GetClientGeneratorConfigurationOrDefault(context);
@@ -16,7 +17,8 @@ internal sealed class ClientGeneratorSettingsBuilder
 
     public ClientGeneratorSettings? Build(ISymbol builderSymbol)
     {
-        if ((GetClientGeneratorConfigurationOrDefault(builderSymbol) ?? _globalParameters) is not { } attributeParameters)
+        if ((GetClientGeneratorConfigurationOrDefault(builderSymbol) ?? _globalParameters) is not
+            { } attributeParameters)
             return null;
 
         var prefixRoute = attributeParameters.GetOrDefault<string>(nameof(ClientGeneratorSettings.RoutePrefix));
@@ -24,11 +26,14 @@ internal sealed class ClientGeneratorSettingsBuilder
         return new ClientGeneratorSettings(prefixRoute);
     }
 
-    private static ImmutableArray<KeyValuePair<string, TypedConstant>>? GetClientGeneratorConfigurationOrDefault(ISymbol context)
+    private static ImmutableArray<KeyValuePair<string, TypedConstant>>? GetClientGeneratorConfigurationOrDefault(
+        ISymbol context)
     {
         var attributesData = context.GetAttributes();
-        var attribute = attributesData.SingleOrDefault(x => x.AttributeClass.HasNameOrBaseClassHas(nameof(GenerateClientAttribute)));
-        
+        var attribute = attributesData.SingleOrDefault(x =>
+            x.AttributeClass.HasNameOrBaseClassHas(nameof(GenerateClientAttribute))
+        );
+
         if (attribute is null) return null;
         return attribute.NamedArguments.Length <= 0 ? null : attribute.NamedArguments;
     }

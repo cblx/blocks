@@ -18,7 +18,6 @@ internal static class AttributeConstructorParametersExtensions
     {
         var element = attributeParameters.FirstOrDefault(p => p.Key == propertyName).Value;
         return (T)(element.Value ?? throw new ConfigurationException($"{propertyName} cannot be null."));
-
     }
 
     public static string GetOrThrow(this in ImmutableArray<KeyValuePair<string, TypedConstant>> attributeParameters, string propertyName)

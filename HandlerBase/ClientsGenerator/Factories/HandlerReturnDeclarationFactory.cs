@@ -30,9 +30,6 @@ internal static class HandlerReturnDeclarationFactory
         {
             if(nodeOrToken.IsNode)
                 AnalyzeNodeHelper.Analyze(returnDeclaration, nodeOrToken.AsNode());
-
-            //if (nodeOrToken.IsToken)
-            //    AnalyzeTokenHelper.Analyze(returnDeclaration, nodeOrToken.AsToken());
         }
 
         return returnDeclaration;

@@ -21,6 +21,8 @@ internal static class MethodDeclarationSyntaxExtension
 
     public static bool IsPublicHandlerAction(this MethodDeclarationSyntax methodDeclaration)
     {
+        if (!methodDeclaration.Modifiers.Any()) return true;
+
         return methodDeclaration
             .Modifiers
             .Any(token => token.Text.Trim() is "public");
