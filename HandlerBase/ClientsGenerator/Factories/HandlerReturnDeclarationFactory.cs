@@ -15,8 +15,8 @@ internal static class HandlerReturnDeclarationFactory
 
         return new HandlerReturnDeclaration(
             returnDeclaration.TypeName,
-            methodDeclarationSyntax.ReturnType.ToFullString(),
-            returnDeclaration.ManipulationFormat,
+            methodDeclarationSyntax.ReturnType.ToFullString().TrimStart().TrimEnd(),
+            returnDeclaration.ManipulationFormat.TrimStart().TrimEnd(),
             returnDeclaration.HasVoid,
             returnDeclaration.HasAsync
         );
