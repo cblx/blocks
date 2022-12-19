@@ -40,13 +40,25 @@ public class ClientsSourceGenerator : ISourceGenerator
         var clientGeneratorSettingBuilder = new ClientGeneratorSettingsBuilder(context.Compilation.Assembly);
         var handlerFactory = new HandlerDeclarationFactory(clientGeneratorSettingBuilder, context);
 
+        ServiceCollectionTemplate.Clean();
+
         foreach (var interfaceDeclaration in interfaceDeclarations)
         {
             var handler = handlerFactory.CreateOrDefault(interfaceDeclaration);
             if (handler is null) continue;
 
             var code = HandlerClientTemplate.Create(handler);
+            
+            ServiceCollectionTemplate.AddScoped(handler);
             context.AddSource($"{handler.ImplementationName}Client.g.cs", code);
         }
+        
+        var assemblyName = context.Compilation.AssemblyName!;
+        var addServicesName = $"Add{assemblyName.Replace(".", "")}ClientHandlers";
+
+        var codeForService = ServiceCollectionTemplate.Create(assemblyName, addServicesName);
+        
+        context.AddSource("ServiceCollectionExtensionsForClientHandlers.g.cs", codeForService);
+
     }
 }
