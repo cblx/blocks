@@ -11,12 +11,15 @@ internal static class HandlerClientTemplate
         var builder = new StringBuilder();
 
         builder.Append($$"""
+            // Auto-generated code
             #nullable enable
             using System.Net.Http.Json;
+            using System.Diagnostics.CodeAnalysis;
             using Cblx.Blocks;
 
             namespace {{handler.HandlerNamespace}};
 
+            [ExcludeFromCodeCoverage]
             public class {{handler.ImplementationName}}Client : {{handler.InterfaceName}}
             {
                 private readonly HttpClient _httpClient;

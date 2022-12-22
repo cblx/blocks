@@ -6,6 +6,8 @@ internal static class StringHelper
 {
     public static string CreateEndPointRoute(HandlerDeclaration handler)
     {
-        return handler.RoutePrefix is null ? handler.ImplementationName : $"{handler.RoutePrefix}/{handler.ImplementationName}";
+        return handler.RoutePrefix is null
+            ? handler.ImplementationName
+            : $"{handler.RoutePrefix}/{handler.ImplementationName}";
     }
 }

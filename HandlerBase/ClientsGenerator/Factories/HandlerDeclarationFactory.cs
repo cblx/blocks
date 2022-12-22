@@ -11,7 +11,8 @@ internal class HandlerDeclarationFactory
     private readonly ClientGeneratorSettingsBuilder _clientGeneratorPropertiesBuilder;
     private readonly GeneratorExecutionContext _context;
 
-    public HandlerDeclarationFactory(ClientGeneratorSettingsBuilder clientGeneratorPropertiesBuilder, GeneratorExecutionContext context)
+    public HandlerDeclarationFactory(ClientGeneratorSettingsBuilder clientGeneratorPropertiesBuilder,
+        GeneratorExecutionContext context)
     {
         _clientGeneratorPropertiesBuilder = clientGeneratorPropertiesBuilder;
         _context = context;
@@ -25,7 +26,7 @@ internal class HandlerDeclarationFactory
 
         var handlerAction = HandlerActionDeclarationFactory.CreateOrDefault(handlerActionMethod);
 
-        if(handlerAction is null) return default;
+        if (handlerAction is null) return default;
 
 
         var name = interfaceDeclaration.Identifier.Text;
@@ -33,18 +34,16 @@ internal class HandlerDeclarationFactory
         var clientGeneratorSettings = GetClientGeneratorProperties(interfaceDeclaration);
 
 
-        return new HandlerDeclaration(name, handlerNamespace, handlerAction,clientGeneratorSettings?.RoutePrefix);
+        return new HandlerDeclaration(name, handlerNamespace, handlerAction, clientGeneratorSettings?.RoutePrefix);
     }
 
     private ClientGeneratorSettings? GetClientGeneratorProperties(SyntaxNode interfaceDeclaration)
     {
         var semanticModel = _context.Compilation.GetSemanticModel(interfaceDeclaration.SyntaxTree);
         var interfaceSymbol = semanticModel.GetDeclaredSymbol(interfaceDeclaration, _context.CancellationToken);
-        
-        return interfaceSymbol is not INamedTypeSymbol namedInterfaceSymbol ? 
-            null 
-            : 
-            _clientGeneratorPropertiesBuilder.Build(namedInterfaceSymbol);
+
+        return interfaceSymbol is not INamedTypeSymbol namedInterfaceSymbol
+            ? null
+            : _clientGeneratorPropertiesBuilder.Build(namedInterfaceSymbol);
     }
-    
 }

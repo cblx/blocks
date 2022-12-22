@@ -11,8 +11,10 @@ internal static class GetVerbMethodBodyTemplete
         {
             return InvalidOperationExceptionTemplate.Create("ReturnDeclaration it can not be VOID.");
         }
-        
-        return handler.HandlerAction.ParameterDeclaration is null ? CreateMethodBodyWithoutParameter(handler) : CreateMethodBodyWithParameter(handler);
+
+        return handler.HandlerAction.ParameterDeclaration is null
+            ? CreateMethodBodyWithoutParameter(handler)
+            : CreateMethodBodyWithParameter(handler);
     }
 
     private static string CreateMethodBodyWithoutParameter(HandlerDeclaration handler)

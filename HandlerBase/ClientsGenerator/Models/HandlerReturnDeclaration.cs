@@ -3,10 +3,10 @@
 internal class HandlerReturnDeclaration
 {
     public HandlerReturnDeclaration(
-        string typeName, 
-        string methodReturnFormat, 
-        string manipulationFormat, 
-        bool hasVoid, 
+        string typeName,
+        string methodReturnFormat,
+        string manipulationFormat,
+        bool hasVoid,
         bool hasAsync)
     {
         TypeName = typeName;

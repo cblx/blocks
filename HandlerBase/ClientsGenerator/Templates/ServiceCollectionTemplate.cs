@@ -9,20 +9,22 @@ internal static class ServiceCollectionTemplate
 {
     private static readonly IList<string> Services = new List<string>();
 
-    public static void Clean() => Services.Clear(); 
+    public static void Clean() => Services.Clear();
 
     public static void AddScoped(HandlerDeclaration handler)
     {
         var namespaceBase = handler.HandlerNamespace;
         var contract = handler.InterfaceName;
         var service = handler.ImplementationName;
-        
+
         Services.Add($"services.AddScoped<{namespaceBase}.{contract}, {namespaceBase}.{service}Client>();");
     }
 
     public static string? CreateOrDefault(string assemblyName, string addServicesName)
     {
-        return Services.Any() is false ? null : $$"""
+        return Services.Any() is false
+            ? null
+            : $$"""
             // Auto-generated code
             using Microsoft.Extensions.DependencyInjection;
             using System.Diagnostics.CodeAnalysis;

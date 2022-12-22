@@ -3,11 +3,14 @@
 internal static class QueryStringHelperTemplate
 {
     public const string Source = """
+// Auto-generated code
 #nullable enable
 using System.Collections;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Cblx.Blocks;
 
+[ExcludeFromCodeCoverage]
 internal static class QueryStringHelper
 {
     public static string ToQueryString(object instance)

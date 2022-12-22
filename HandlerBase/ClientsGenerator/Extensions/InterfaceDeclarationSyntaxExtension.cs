@@ -6,7 +6,8 @@ namespace Cblx.Blocks.Extensions;
 
 internal static class InterfaceDeclarationSyntaxExtension
 {
-    public static MethodDeclarationSyntax? IdentifyHandlerActionMethod(this InterfaceDeclarationSyntax interfaceDeclaration)
+    public static MethodDeclarationSyntax? IdentifyHandlerActionMethod(
+        this InterfaceDeclarationSyntax interfaceDeclaration)
     {
         return interfaceDeclaration
             .Members
@@ -14,6 +15,4 @@ internal static class InterfaceDeclarationSyntaxExtension
             .Where(method => method.IsPublicHandlerAction())
             .FirstOrDefault(p => p.IdentifyHttpVerb() is not HttpVerb.Unknown);
     }
-
-    
 }

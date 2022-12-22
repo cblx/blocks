@@ -22,7 +22,10 @@ internal static class BaseTypeDeclarationSyntaxExtension
 
         while (true)
         {
-            if (namespaceParent.Parent is not NamespaceDeclarationSyntax parent) { break; }
+            if (namespaceParent.Parent is not NamespaceDeclarationSyntax parent)
+            {
+                break;
+            }
 
             nameSpace = $"{namespaceParent.Name}.{nameSpace}";
             namespaceParent = parent;

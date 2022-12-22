@@ -9,7 +9,7 @@ internal static class MethodDeclarationSyntaxExtension
     public static HttpVerb IdentifyHttpVerb(this MethodDeclarationSyntax symbol)
     {
         var possibleVerb = symbol.Identifier.Text.Trim();
-        
+
         return possibleVerb switch
         {
             _ when possibleVerb.StartsWith("Get") => HttpVerb.Get,

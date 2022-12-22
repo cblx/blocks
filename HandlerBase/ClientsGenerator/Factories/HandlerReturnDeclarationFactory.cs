@@ -28,12 +28,12 @@ internal static class HandlerReturnDeclarationFactory
 
         foreach (var nodeOrToken in tree)
         {
-            if(nodeOrToken.IsNode)
+            if (nodeOrToken.IsNode)
                 AnalyzeNodeHelper.Analyze(returnDeclaration, nodeOrToken.AsNode());
         }
 
         return returnDeclaration;
-    }      
+    }
 }
 
 internal record ReturnDeclarationDto

@@ -12,6 +12,4 @@ internal static class SymbolExtensions
 
 
     public static string HandlerName(this ISymbol symbol) => symbol.Name;
-
-
 }
