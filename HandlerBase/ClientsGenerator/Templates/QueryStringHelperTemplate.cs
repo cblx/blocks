@@ -88,8 +88,8 @@ internal static class QueryStringHelper
     private static IEnumerable<string> GetQueryStringFromGuids(this IDictionary<string, object?> propertiesDictionary)
         => CreateQueryString(
             propertiesDictionary,
-            o => o.Value is Guid,
-            p => CreateQueryStringArgumentFromPair(p.Key, (p.Value as Guid?).ToString())
+            o => o.Value is Guid || (o.Value?.GetType().Name.EndsWith("Id") ?? false),
+            p => CreateQueryStringArgumentFromPair(p.Key, p.ToString())
         );
 
     private static IEnumerable<string> GetQueryStringFromIEnumerable(this IDictionary<string, object?> propertiesDictionary)
