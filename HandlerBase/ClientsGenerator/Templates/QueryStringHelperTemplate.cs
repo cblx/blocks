@@ -25,19 +25,17 @@ internal static class QueryStringHelper
         queries.AddRange(propertiesDictionary.GetQueryStringFromDateTime());
         queries.AddRange(propertiesDictionary.GetQueryStringFromIEnumerable());
         queries.AddRange(propertiesDictionary.GetQueryStringFromGuids());
+        queries.AddRange(propertiesDictionary.GetQueryStringFromTypedId());
 
         return queries.JoinQueriesString();
     }
 
-
     private static IDictionary<string, object?> ToPropertyDictionary(this object instance)
         => instance
-                .GetType()
-                .GetProperties()
-                .Where(p => p.CanRead)
-                .ToDictionary(propertyInfo =>
-                propertyInfo.Name,
-                propertyInfo => propertyInfo.GetValue(instance, null));
+            .GetType()
+            .GetProperties()
+            .Where(p => p.CanRead)
+            .ToDictionary(propertyInfo => propertyInfo.Name, propertyInfo => propertyInfo.GetValue(instance, null));
 
     private static IEnumerable<string> CreateQueryString(
         IDictionary<string, object?> propertiesDictionary,
@@ -64,7 +62,8 @@ internal static class QueryStringHelper
             p => CreateQueryStringArgumentFromPair(p.Key, p.Value?.ReadEnumNumber())
         );
 
-    private static IEnumerable<string> GetQueryStringFromNumerics(this IDictionary<string, object?> propertiesDictionary)
+    private static IEnumerable<string> GetQueryStringFromNumerics(
+        this IDictionary<string, object?> propertiesDictionary)
         => CreateQueryString(
             propertiesDictionary,
             o => o.Value is int or long or decimal or float or double,
@@ -78,7 +77,8 @@ internal static class QueryStringHelper
             p => CreateQueryStringArgumentFromPair(p.Key, p.Value?.ToString())
         );
 
-    private static IEnumerable<string> GetQueryStringFromDateTime(this IDictionary<string, object?> propertiesDictionary)
+    private static IEnumerable<string> GetQueryStringFromDateTime(
+        this IDictionary<string, object?> propertiesDictionary)
         => CreateQueryString(
             propertiesDictionary,
             o => o.Value is DateTime or DateOnly or TimeOnly or TimeSpan or DateTimeOffset,
@@ -88,11 +88,20 @@ internal static class QueryStringHelper
     private static IEnumerable<string> GetQueryStringFromGuids(this IDictionary<string, object?> propertiesDictionary)
         => CreateQueryString(
             propertiesDictionary,
-            o => o.Value is Guid || (o.Value?.GetType().Name.EndsWith("Id") ?? false),
-            p => CreateQueryStringArgumentFromPair(p.Key, p.ToString())
+            o => o.Value is Guid,
+            p => CreateQueryStringArgumentFromPair(p.Key, p.Value?.ToString())
         );
 
-    private static IEnumerable<string> GetQueryStringFromIEnumerable(this IDictionary<string, object?> propertiesDictionary)
+    private static IEnumerable<string> GetQueryStringFromTypedId(this IDictionary<string, object?> propertiesDictionary)
+        => CreateQueryString(
+            propertiesDictionary,
+            o => (o.Value?.GetType().Name.EndsWith("Id") ?? false),
+            p => CreateQueryStringArgumentFromPair(p.Key, p.Value?.ToString())
+        );
+
+
+    private static IEnumerable<string> GetQueryStringFromIEnumerable(
+        this IDictionary<string, object?> propertiesDictionary)
         => CreateQueryString(
             propertiesDictionary,
             o => o.Value is IEnumerable,
@@ -118,6 +127,7 @@ internal static class QueryStringHelper
         queries.AddRange(dictionary.GetQueryStringFromEnums());
         queries.AddRange(dictionary.GetQueryStringFromDateTime());
         queries.AddRange(dictionary.GetQueryStringFromGuids());
+        queries.AddRange(dictionary.GetQueryStringFromTypedId());
 
         return queries.JoinQueriesString();
     }
@@ -127,7 +137,6 @@ internal static class QueryStringHelper
 
     private static string JoinQueriesString(this IEnumerable<string> queries)
         => string.Join("&", queries.Where(q => !string.IsNullOrEmpty(q)).OrderBy(p => p));
-
 }
 """;
 }
