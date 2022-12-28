@@ -35,6 +35,7 @@ internal static class AnalyzeNodeHelper
                 return;
         }
 
+        declarationDto.Namespace = CodeHelpers.GetNamespace(syntax)!;
         declarationDto.TypeName = name;
         declarationDto.HasVoid = false;
 

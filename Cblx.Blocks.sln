@@ -47,6 +47,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{0602E5
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cblx.Blocks.SourceGenerators.TestHelpers", "SourceGenerators\Common\TestHelpers\Cblx.Blocks.SourceGenerators.TestHelpers.csproj", "{282A7FBB-C475-4354-97D9-C288DDEAD384}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cblx.Blocks.HandlerBase.Clients", "HandlerBase\Clients\Cblx.Blocks.HandlerBase.Clients.csproj", "{0BD9AF02-535F-4ACD-9217-884323BED5F8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -101,6 +103,10 @@ Global
 		{282A7FBB-C475-4354-97D9-C288DDEAD384}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{282A7FBB-C475-4354-97D9-C288DDEAD384}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{282A7FBB-C475-4354-97D9-C288DDEAD384}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0BD9AF02-535F-4ACD-9217-884323BED5F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0BD9AF02-535F-4ACD-9217-884323BED5F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0BD9AF02-535F-4ACD-9217-884323BED5F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0BD9AF02-535F-4ACD-9217-884323BED5F8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -122,6 +128,7 @@ Global
 		{ABA341E5-BEBD-43F7-9118-7948BECDB40C} = {EC0FB4AB-0B99-4CDD-8E20-2F65AC51A2F4}
 		{0602E561-E716-4C57-96DE-69931FF9769D} = {64CC5228-08E2-4BDA-BA3B-0C7CFC7D639E}
 		{282A7FBB-C475-4354-97D9-C288DDEAD384} = {0602E561-E716-4C57-96DE-69931FF9769D}
+		{0BD9AF02-535F-4ACD-9217-884323BED5F8} = {131DAEF0-5005-4D3A-B6A9-CE6E65967498}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E5FB98E3-504F-4E59-A466-98DE782B28CA}

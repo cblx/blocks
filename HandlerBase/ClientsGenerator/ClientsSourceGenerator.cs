@@ -7,6 +7,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Diagnostics;
 using System.Linq;
+using Cblx.Blocks.Helpers;
 
 namespace Cblx.Blocks;
 
@@ -15,13 +16,11 @@ public class ClientsSourceGenerator : ISourceGenerator
 {
     public void Execute(GeneratorExecutionContext context)
     {
-        //Register here - source code 
-        context.AddSource("QueryStringHelper.g.cs", QueryStringHelperTemplate.Source);
 
 #if DEBUG
         if (!Debugger.IsAttached)
         {
-            Debugger.Launch();
+            //Debugger.Launch();
         }
 #endif
 
@@ -33,12 +32,15 @@ public class ClientsSourceGenerator : ISourceGenerator
     public void Initialize(GeneratorInitializationContext context) 
         => context.RegisterForSyntaxNotifications(() => new HandlerFinder());
 
+
     private static void CreateAndRegisterClientsInContext(
         IEnumerable<InterfaceDeclarationSyntax> interfaceDeclarations, 
         GeneratorExecutionContext context)
     {
-        var clientGeneratorSettingBuilder = new ClientGeneratorSettingsBuilder(context.Compilation.Assembly);
-        var handlerFactory = new HandlerDeclarationFactory(clientGeneratorSettingBuilder, context);
+        CodeHelpers.ChangeGeneratorExecutionContext(context);
+
+        var clientGeneratorSettingBuilder = new ClientGeneratorSettingsBuilder(CodeHelpers.GetAssemblySymbol());
+        var handlerFactory = new HandlerDeclarationFactory(clientGeneratorSettingBuilder);
 
         ServiceCollectionTemplate.Clean();
 
@@ -50,20 +52,21 @@ public class ClientsSourceGenerator : ISourceGenerator
             var code = HandlerClientTemplate.Create(handler);
             
             ServiceCollectionTemplate.AddScoped(handler);
-            context.AddSource($"{handler.ImplementationName}Client.g.cs", code);
+            CodeHelpers.AddSource($"{handler.ImplementationName}Client.g.cs", code);
         }
         
-        var assemblyName = context.Compilation.AssemblyName!;
+        var assemblyName = CodeHelpers.GetAssemblyName()!;
         var addServicesName = $"Add{assemblyName.Replace(".", "")}ClientHandlers";
-
         var codeForService = ServiceCollectionTemplate.CreateOrDefault(assemblyName, addServicesName);
 
         if (string.IsNullOrEmpty(codeForService))
         {
+            CodeHelpers.RemoveGeneratorExecutionContext();
             return;
         }
-        
-        context.AddSource("ServiceCollectionExtensionsForClientHandlers.g.cs", codeForService!);
+
+        CodeHelpers.AddSource("ServiceCollectionExtensionsForClientHandlers.g.cs", codeForService!);
+        CodeHelpers.RemoveGeneratorExecutionContext();
 
     }
 }

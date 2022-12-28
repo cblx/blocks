@@ -1,4 +1,5 @@
-﻿using Cblx.Blocks.Models;
+﻿using Cblx.Blocks.Helpers;
+using Cblx.Blocks.Models;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Cblx.Blocks.Factories;
@@ -15,6 +16,10 @@ internal static class HandlerParameterDeclarationFactory
         var name = parameter!.Identifier.Text.Trim();
         var methodParameterFormat = parameter.ToFullString();
 
-        return new HandlerParameterDeclaration(name, typeName, methodParameterFormat);
+        var parameterNamespace = CodeHelpers.GetNamespace(parameter.Type!)!;
+
+        return new HandlerParameterDeclaration(name, typeName, methodParameterFormat, parameterNamespace);
     }
+
+
 }

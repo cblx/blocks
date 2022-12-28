@@ -1,6 +1,6 @@
-﻿namespace Cblx.Blocks.HandlerBase.Tests.Handlers;
+﻿using Cblx.Blocks.HandlerBase.Tests.Handlers.CodeAnalysis.CSharp.Syntax;
 
-
+namespace Cblx.Blocks.HandlerBase.Tests.Handlers;
 
 [GenerateClient(RoutePrefix = "prefix")]
 public interface IGetProductWithParameter
@@ -13,8 +13,6 @@ public interface IGetProductWithoutParameter
 {
     Task<ObterProdutoResponse> GetAsync();
 }
-
-
 
 
 [GenerateClient(RoutePrefix = "prefix")]
@@ -40,8 +38,6 @@ public interface ICreateProductWithParameterWithoutResponseHandler
 {
     Task PostAsync(ObterProdutoRequest request);
 }
-
-
 
 
 [GenerateClient(RoutePrefix = "prefix")]

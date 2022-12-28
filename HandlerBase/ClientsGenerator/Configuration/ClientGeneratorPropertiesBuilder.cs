@@ -31,7 +31,7 @@ internal sealed class ClientGeneratorSettingsBuilder
     {
         var attributesData = context.GetAttributes();
         var attribute = attributesData.SingleOrDefault(x =>
-            x.AttributeClass.HasNameOrBaseClassHas(nameof(GenerateClientAttribute))
+            x.AttributeClass.HasNameOrBaseClassHas("GenerateClient")
         );
 
         if (attribute is null) return null;

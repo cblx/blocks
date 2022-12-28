@@ -1,5 +1,6 @@
 ﻿using Cblx.Blocks.Configuration;
 using Cblx.Blocks.Extensions;
+using Cblx.Blocks.Helpers;
 using Cblx.Blocks.Models;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -9,13 +10,10 @@ namespace Cblx.Blocks.Factories;
 internal class HandlerDeclarationFactory
 {
     private readonly ClientGeneratorSettingsBuilder _clientGeneratorPropertiesBuilder;
-    private readonly GeneratorExecutionContext _context;
 
-    public HandlerDeclarationFactory(ClientGeneratorSettingsBuilder clientGeneratorPropertiesBuilder,
-        GeneratorExecutionContext context)
+    public HandlerDeclarationFactory(ClientGeneratorSettingsBuilder clientGeneratorPropertiesBuilder)
     {
         _clientGeneratorPropertiesBuilder = clientGeneratorPropertiesBuilder;
-        _context = context;
     }
 
     public HandlerDeclaration? CreateOrDefault(InterfaceDeclarationSyntax interfaceDeclaration)
@@ -39,8 +37,7 @@ internal class HandlerDeclarationFactory
 
     private ClientGeneratorSettings? GetClientGeneratorProperties(SyntaxNode interfaceDeclaration)
     {
-        var semanticModel = _context.Compilation.GetSemanticModel(interfaceDeclaration.SyntaxTree);
-        var interfaceSymbol = semanticModel.GetDeclaredSymbol(interfaceDeclaration, _context.CancellationToken);
+        var interfaceSymbol = CodeHelpers.GetDeclaredSymbol(interfaceDeclaration);
 
         return interfaceSymbol is not INamedTypeSymbol namedInterfaceSymbol
             ? null

@@ -1,5 +1,8 @@
 ﻿using Cblx.Blocks.Enums;
 using Cblx.Blocks.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Cblx.Blocks.Templates;
@@ -16,6 +19,7 @@ internal static class HandlerClientTemplate
             using System.Net.Http.Json;
             using System.Diagnostics.CodeAnalysis;
             using Cblx.Blocks;
+            {{CreateUsingsIfNotEquals(handler.HandlerAction.ParameterDeclaration?.Namespace, handler.HandlerAction.ReturnDeclaration.Namespace, handler.HandlerNamespace)}}
 
             namespace {{handler.HandlerNamespace}};
 
@@ -60,4 +64,27 @@ internal static class HandlerClientTemplate
     
     private static void CreateDeleteMethodBody(StringBuilder builder, HandlerDeclaration handler) 
         => builder.AppendLine(DeleteVerbMethodBodyTemplete.Create(handler));
+
+    private static string CreateUsingsIfNotEquals(string? namespaceParameter, string? namespaceReturn, string handlerNamespace)
+    {
+        var listNamespaces = new List<string>
+        {
+            handlerNamespace
+        };
+
+        if (!string.IsNullOrEmpty(namespaceParameter) && !listNamespaces.Contains(namespaceParameter!))
+        {
+            listNamespaces.Add(namespaceParameter!);
+        }
+
+        if (!string.IsNullOrEmpty(namespaceReturn) &&  !listNamespaces.Contains(namespaceReturn!))
+        {
+            listNamespaces.Add(namespaceReturn!);
+        }
+
+        listNamespaces.Remove(handlerNamespace);
+        listNamespaces = listNamespaces.Select(n => $"using {n};").ToList();
+
+        return listNamespaces.Any() ? string.Join(Environment.NewLine, listNamespaces) : string.Empty;
+    }
 }

@@ -18,7 +18,8 @@ internal static class HandlerReturnDeclarationFactory
             methodDeclarationSyntax.ReturnType.ToFullString().TrimStart().TrimEnd(),
             returnDeclaration.ManipulationFormat.TrimStart().TrimEnd(),
             returnDeclaration.HasVoid,
-            returnDeclaration.HasAsync
+            returnDeclaration.HasAsync,
+            returnDeclaration.Namespace
         );
     }
 
@@ -42,4 +43,5 @@ internal record ReturnDeclarationDto
     public string ManipulationFormat { get; set; } = string.Empty;
     public bool HasVoid { get; set; }
     public bool HasAsync { get; set; }
+    public string Namespace { get; set; } = string.Empty;
 }
