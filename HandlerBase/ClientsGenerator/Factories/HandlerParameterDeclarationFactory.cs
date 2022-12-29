@@ -1,12 +1,13 @@
 ﻿using Cblx.Blocks.Helpers;
 using Cblx.Blocks.Models;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Cblx.Blocks.Factories;
 
 internal static class HandlerParameterDeclarationFactory
 {
-    public static HandlerParameterDeclaration? CreateOrDefault(MethodDeclarationSyntax methodDeclarationSyntax)
+    public static HandlerParameterDeclaration? CreateOrDefault(GeneratorExecutionContext context, MethodDeclarationSyntax methodDeclarationSyntax)
     {
         var parameter = methodDeclarationSyntax.ParameterList.Parameters.FirstOrDefault();
 
@@ -16,9 +17,9 @@ internal static class HandlerParameterDeclarationFactory
         var name = parameter!.Identifier.Text.Trim();
         var methodParameterFormat = parameter.ToFullString();
 
-        var parameterNamespace = CodeHelpers.GetNamespace(parameter.Type!)!;
+        var parameterNamespace = CodeHelpers.GetNamespace(context,parameter.Type!);
 
-        return new HandlerParameterDeclaration(name, typeName, methodParameterFormat, parameterNamespace);
+        return new HandlerParameterDeclaration(name, typeName, methodParameterFormat, parameterNamespace!);
     }
 
 

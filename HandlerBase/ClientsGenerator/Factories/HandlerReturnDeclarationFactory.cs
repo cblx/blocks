@@ -8,10 +8,10 @@ namespace Cblx.Blocks.Factories;
 
 internal static class HandlerReturnDeclarationFactory
 {
-    public static HandlerReturnDeclaration Create(MethodDeclarationSyntax methodDeclarationSyntax)
+    public static HandlerReturnDeclaration Create(GeneratorExecutionContext context, MethodDeclarationSyntax methodDeclarationSyntax)
     {
         var returnMethodTree = methodDeclarationSyntax.ReturnType.DescendantNodesAndTokensAndSelf();
-        var returnDeclaration = IdentifyAndProcessMethodReturnTree(returnMethodTree);
+        var returnDeclaration = IdentifyAndProcessMethodReturnTree(context, returnMethodTree);
 
         return new HandlerReturnDeclaration(
             returnDeclaration.TypeName,
@@ -23,14 +23,14 @@ internal static class HandlerReturnDeclarationFactory
         );
     }
 
-    private static ReturnDeclarationDto IdentifyAndProcessMethodReturnTree(IEnumerable<SyntaxNodeOrToken> tree)
+    private static ReturnDeclarationDto IdentifyAndProcessMethodReturnTree(GeneratorExecutionContext context, IEnumerable<SyntaxNodeOrToken> tree)
     {
         var returnDeclaration = new ReturnDeclarationDto();
 
         foreach (var nodeOrToken in tree)
         {
             if (nodeOrToken.IsNode)
-                AnalyzeNodeHelper.Analyze(returnDeclaration, nodeOrToken.AsNode());
+                AnalyzeNodeHelper.Analyze(context,returnDeclaration, nodeOrToken.AsNode());
         }
 
         return returnDeclaration;

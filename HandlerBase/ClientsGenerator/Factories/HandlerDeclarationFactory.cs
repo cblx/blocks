@@ -9,10 +9,13 @@ namespace Cblx.Blocks.Factories;
 
 internal class HandlerDeclarationFactory
 {
+    private readonly GeneratorExecutionContext _context;
     private readonly ClientGeneratorSettingsBuilder _clientGeneratorPropertiesBuilder;
 
-    public HandlerDeclarationFactory(ClientGeneratorSettingsBuilder clientGeneratorPropertiesBuilder)
+
+    public HandlerDeclarationFactory(GeneratorExecutionContext context, ClientGeneratorSettingsBuilder clientGeneratorPropertiesBuilder)
     {
+        _context = context;
         _clientGeneratorPropertiesBuilder = clientGeneratorPropertiesBuilder;
     }
 
@@ -22,7 +25,7 @@ internal class HandlerDeclarationFactory
 
         if (handlerActionMethod is null) return default;
 
-        var handlerAction = HandlerActionDeclarationFactory.CreateOrDefault(handlerActionMethod);
+        var handlerAction = HandlerActionDeclarationFactory.CreateOrDefault(_context, handlerActionMethod);
 
         if (handlerAction is null) return default;
 
@@ -37,7 +40,7 @@ internal class HandlerDeclarationFactory
 
     private ClientGeneratorSettings? GetClientGeneratorProperties(SyntaxNode interfaceDeclaration)
     {
-        var interfaceSymbol = CodeHelpers.GetDeclaredSymbol(interfaceDeclaration);
+        var interfaceSymbol = CodeHelpers.GetDeclaredSymbol(_context, interfaceDeclaration);
 
         return interfaceSymbol is not INamedTypeSymbol namedInterfaceSymbol
             ? null

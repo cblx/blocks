@@ -6,12 +6,12 @@ namespace Cblx.Blocks.Helpers;
 
 internal static class AnalyzeNodeHelper
 {
-    public static void Analyze(ReturnDeclarationDto declarationDto, SyntaxNode? node)
+    public static void Analyze(GeneratorExecutionContext context, ReturnDeclarationDto declarationDto, SyntaxNode? node)
     {
         switch (node)
         {
             case IdentifierNameSyntax syntax:
-                declarationDto.ProcessIdentifierNameSyntax(syntax);
+                declarationDto.ProcessIdentifierNameSyntax(syntax, context);
                 break;
             case GenericNameSyntax syntax:
                 declarationDto.ProcessGenericNameSyntax(syntax);
@@ -24,7 +24,8 @@ internal static class AnalyzeNodeHelper
 
     private static void ProcessIdentifierNameSyntax(
         this ReturnDeclarationDto declarationDto,
-        IdentifierNameSyntax syntax)
+        IdentifierNameSyntax syntax,
+        GeneratorExecutionContext context)
     {
         var name = syntax.Identifier.Text.Trim();
 
@@ -35,7 +36,7 @@ internal static class AnalyzeNodeHelper
                 return;
         }
 
-        declarationDto.Namespace = CodeHelpers.GetNamespace(syntax)!;
+        declarationDto.Namespace = CodeHelpers.GetNamespace(context,syntax)!;
         declarationDto.TypeName = name;
         declarationDto.HasVoid = false;
 
