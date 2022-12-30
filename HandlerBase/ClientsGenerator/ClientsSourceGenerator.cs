@@ -1,13 +1,13 @@
 ﻿using Cblx.Blocks.Configuration;
 using Cblx.Blocks.Factories;
 using Cblx.Blocks.Finders;
-using Cblx.Blocks.Helpers;
 using Cblx.Blocks.Templates;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Text;
 
 namespace Cblx.Blocks;
 
@@ -20,7 +20,7 @@ public class ClientsSourceGenerator : ISourceGenerator
 #if DEBUG
         if (!Debugger.IsAttached)
         {
-            Debugger.Launch();
+            //Debugger.Launch();
         }
 #endif
 
@@ -43,7 +43,7 @@ public class ClientsSourceGenerator : ISourceGenerator
         var clientGeneratorSettingBuilder = new ClientGeneratorSettingsBuilder(context.Compilation.Assembly);
         var handlerFactory = new HandlerDeclarationFactory(context, clientGeneratorSettingBuilder);
 
-        ServiceCollectionTemplate.Clean();
+        var stringBuilder = new StringBuilder();
 
         foreach (var interfaceDeclaration in interfaceDeclarations)
         {
@@ -55,19 +55,15 @@ public class ClientsSourceGenerator : ISourceGenerator
 
             var code = HandlerClientTemplate.Create(handler);
 
-            ServiceCollectionTemplate.AddScoped(handler);
+            stringBuilder.AppendLine(ServiceCollectionTemplate.CreateAddScopedLine(handler));
             context.AddSource($"{handler.ImplementationName}Client.g.cs", code);
         }
 
+        if(stringBuilder.Length <= 0) { return; }
+
         var assemblyName = context.Compilation.AssemblyName!;
         var addServicesName = $"Add{assemblyName.Replace(".", "")}ClientHandlers";
-        var codeForService = ServiceCollectionTemplate.CreateOrDefault(assemblyName, addServicesName);
-
-        if (string.IsNullOrEmpty(codeForService))
-        {
-            return;
-        }
-
-        context.AddSource("ServiceCollectionExtensionsForClientHandlers.g.cs", codeForService!);
+        var codeForService = ServiceCollectionTemplate.Create(stringBuilder, assemblyName, addServicesName);
+        context.AddSource("ServiceCollectionExtensionsForClientHandlers.g.cs", codeForService);
     }
 }
