@@ -2,11 +2,13 @@
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 namespace Cblx.Blocks.Conventions;
-public class HandlerConvention : IApplicationModelConvention
+public class HandlerBaseConvention : IApplicationModelConvention
 {
     public void Apply(ApplicationModel application)
     {
-        foreach (var action in application.Controllers.SelectMany(ac => ac.Actions))
+        foreach (var action in application.Controllers
+            .Where(c => typeof(HandlerBase).IsAssignableFrom(c.ControllerType))
+            .SelectMany(ac => ac.Actions))
         {
             var verb = GetHttpMethodVerb(action.ActionName);
             ConfigureActionConstraintByHttpVerb(action, verb);
