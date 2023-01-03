@@ -109,7 +109,7 @@ public class ServiceCollectionExtensionsGeneratorTests
     {
         var code = """
             using Cblx.Blocks;
-            [assembly: ServicesEntryAttribute(prefix: "TestProject")]
+            [assembly: ServicesEntry(Include = @"TestProject\..+", Exclude = @"TestProject\..+\.Client")]
             namespace MyNamespace;
             public interface IMyService {}
             
@@ -117,8 +117,7 @@ public class ServiceCollectionExtensionsGeneratorTests
             
             public class AnotherService {}
             """;
-
-        // [assembly: ServicesEntry(prefix: "abc")]
+        
         var generated = """
             // Auto-generated code
             using Microsoft.Extensions.DependencyInjection;
@@ -161,24 +160,29 @@ public class ServiceCollectionExtensionsGeneratorTests
                     // Não consegui resolver os erros abaixo durante o teste ☹️
                     // Cblx.Blocks.SourceGenerators.DependencyInjection\Cblx.Blocks.SourceGenerators.DependencyInjection.ServiceCollectionExtensionsGenerator\ServiceCollectionExtensions.g.cs(2,17): error CS0234: O nome de tipo ou namespace "Extensions" não existe no namespace "Microsoft" (você está sem uma referência de assembly?)
                     DiagnosticResult.CompilerError("CS0234").WithSpan(@"Cblx.Blocks.SourceGenerators.DependencyInjection\Cblx.Blocks.SourceGenerators.DependencyInjection.ServiceCollectionExtensionsGenerator\ServiceCollectionExtensions.g.cs", 2, 17, 2, 27).WithArguments("Extensions", "Microsoft"),
+                    // Cblx.Blocks.SourceGenerators.DependencyInjection\Cblx.Blocks.SourceGenerators.DependencyInjection.ServiceCollectionExtensionsGenerator\ServiceCollectionExtensions.g.cs(2,17): error CS0234: O nome de tipo ou namespace "Extensions" não existe no namespace "Microsoft" (você está sem uma referência de assembly?)
+                    DiagnosticResult.CompilerError("CS0234").WithSpan(@"Cblx.Blocks.SourceGenerators.DependencyInjection\Cblx.Blocks.SourceGenerators.DependencyInjection.ServiceCollectionExtensionsGenerator\ServiceCollectionExtensions.g.cs", 2, 17, 2, 27).WithArguments("Extensions", "Microsoft"),
+                    // Cblx.Blocks.SourceGenerators.DependencyInjection\Cblx.Blocks.SourceGenerators.DependencyInjection.ServiceCollectionExtensionsGenerator\ServiceCollectionExtensions.g.cs(8,19): error CS0246: O nome do tipo ou do namespace "IServiceCollection" não pode ser encontrado (está faltando uma diretiva using ou uma referência de assembly?)
+                    DiagnosticResult.CompilerError("CS0246").WithSpan(@"Cblx.Blocks.SourceGenerators.DependencyInjection\Cblx.Blocks.SourceGenerators.DependencyInjection.ServiceCollectionExtensionsGenerator\ServiceCollectionExtensions.g.cs", 8, 19, 8, 37).WithArguments("IServiceCollection"),
                     // Cblx.Blocks.SourceGenerators.DependencyInjection\Cblx.Blocks.SourceGenerators.DependencyInjection.ServiceCollectionExtensionsGenerator\ServiceCollectionExtensions.g.cs(8,19): error CS0246: O nome do tipo ou do namespace "IServiceCollection" não pode ser encontrado (está faltando uma diretiva using ou uma referência de assembly?)
                     DiagnosticResult.CompilerError("CS0246").WithSpan(@"Cblx.Blocks.SourceGenerators.DependencyInjection\Cblx.Blocks.SourceGenerators.DependencyInjection.ServiceCollectionExtensionsGenerator\ServiceCollectionExtensions.g.cs", 8, 19, 8, 37).WithArguments("IServiceCollection"),
                     // Cblx.Blocks.SourceGenerators.DependencyInjection\Cblx.Blocks.SourceGenerators.DependencyInjection.ServiceCollectionExtensionsGenerator\ServiceCollectionExtensions.g.cs(8,71): error CS0246: O nome do tipo ou do namespace "IServiceCollection" não pode ser encontrado (está faltando uma diretiva using ou uma referência de assembly?)
                     DiagnosticResult.CompilerError("CS0246").WithSpan(@"Cblx.Blocks.SourceGenerators.DependencyInjection\Cblx.Blocks.SourceGenerators.DependencyInjection.ServiceCollectionExtensionsGenerator\ServiceCollectionExtensions.g.cs", 8, 71, 8, 89).WithArguments("IServiceCollection"),
+                    // Cblx.Blocks.SourceGenerators.DependencyInjection\Cblx.Blocks.SourceGenerators.DependencyInjection.ServiceCollectionExtensionsGenerator\ServiceCollectionExtensions.g.cs(8,80): error CS0246: O nome do tipo ou do namespace "IServiceCollection" não pode ser encontrado (está faltando uma diretiva using ou uma referência de assembly?)
+                    DiagnosticResult.CompilerError("CS0246").WithSpan(@"Cblx.Blocks.SourceGenerators.DependencyInjection\Cblx.Blocks.SourceGenerators.DependencyInjection.ServiceCollectionExtensionsGenerator\ServiceCollectionExtensions.g.cs", 8, 80, 8, 98).WithArguments("IServiceCollection"),
                     // Cblx.Blocks.SourceGenerators.DependencyInjection\Cblx.Blocks.SourceGenerators.DependencyInjection.ServiceCollectionExtensionsGenerator\ServiceCollectionExtensions.g.cs(18,9): error CS1929: "IServiceCollection" não contém uma definição para "AddTestProjectOtherServices" e a melhor sobrecarga do método de extensão "ServiceCollectionExtensionsTest.AddTestProjectOtherServices(IServiceCollection)" requer um receptor do tipo "IServiceCollection"
                     DiagnosticResult.CompilerError("CS1929").WithSpan(@"Cblx.Blocks.SourceGenerators.DependencyInjection\Cblx.Blocks.SourceGenerators.DependencyInjection.ServiceCollectionExtensionsGenerator\ServiceCollectionExtensions.g.cs", 18, 9, 18, 17).WithArguments("Microsoft.Extensions.DependencyInjection.IServiceCollection", "AddTestProjectOtherServices", "TestProject.Other.ServiceCollectionExtensionsTest.AddTestProjectOtherServices(IServiceCollection)", "IServiceCollection"),
                     // Class0.cs(1,17): error CS0234: O nome de tipo ou namespace "Extensions" não existe no namespace "Microsoft" (você está sem uma referência de assembly?)
-                    DiagnosticResult.CompilerError("CS0234").WithSpan(@"Class0.cs", 1, 17, 1, 27).WithArguments("Extensions", "Microsoft"),
+                    DiagnosticResult.CompilerError("CS0234").WithSpan("Class0.cs", 1, 17, 1, 27).WithArguments("Extensions", "Microsoft"),
                     // Class0.cs(5,19): error CS0246: O nome do tipo ou do namespace "IServiceCollection" não pode ser encontrado (está faltando uma diretiva using ou uma referência de assembly?)
-                    DiagnosticResult.CompilerError("CS0246").WithSpan(@"Class0.cs", 5, 19, 5, 37).WithArguments("IServiceCollection"),
+                    DiagnosticResult.CompilerError("CS0246").WithSpan("Class0.cs", 5, 19, 5, 37).WithArguments("IServiceCollection"),
                     // Class0.cs(5,71): error CS0246: O nome do tipo ou do namespace "IServiceCollection" não pode ser encontrado (está faltando uma diretiva using ou uma referência de assembly?)
-                    DiagnosticResult.CompilerError("CS0246").WithSpan(@"Class0.cs", 5, 71, 5, 89).WithArguments("IServiceCollection"),
+                    DiagnosticResult.CompilerError("CS0246").WithSpan("Class0.cs", 5, 71, 5, 89).WithArguments("IServiceCollection"),
                 },
                 AdditionalProjects =
                 {
                     {
                         "TestProject.Other",
-                        //bla.TestState
                         new ProjectState("TestProject.Other", LanguageNames.CSharp, "Class", "cs"){
                             Sources = {
                                 """
@@ -198,11 +202,24 @@ public class ServiceCollectionExtensionsGeneratorTests
                                 msDependencyInjectionRef,
                             }
                         }
+                    },
+                    {
+                        "TestProject.IgnoreMe.Client",
+                        new ProjectState("TestProject.IgnoreMe.Client", LanguageNames.CSharp, "Class", "cs"){
+                            Sources = {
+                                """
+                                namespace TestProject.IgnoreMe.Client;
+                                public class Any { }
+                                """
+                            },
+                            ReferenceAssemblies = net70
+                        }
                     }
                 },
                 AdditionalProjectReferences =
                 {
-                    "TestProject.Other"
+                    "TestProject.Other",
+                    "TestProject.IgnoreMe.Client",
                 },
                 ReferenceAssemblies = net70,
                 AdditionalReferences =
