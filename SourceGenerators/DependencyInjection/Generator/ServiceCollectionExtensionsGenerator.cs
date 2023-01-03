@@ -9,15 +9,32 @@ public class ServiceCollectionExtensionsGenerator : ISourceGenerator
     public void Execute(GeneratorExecutionContext context)
     {
         var syntaxReceiver = context.SyntaxReceiver as SyntaxReceiver;
-        if (!syntaxReceiver.AnnotatedServices.Any()) { return; }
-
         string assemblyName = context.Compilation.AssemblyName;
-        string addServicesName = $"Add{assemblyName.Replace(".", "")}Services";
-        
+        string addServicesName = GetAddServicesMethodName(assemblyName);
+        var attributes = context.Compilation.Assembly.GetAttributes();
+        var servicesEntryAttribute = attributes.FirstOrDefault(attr => attr.AttributeClass.Name == "ServicesEntryAttribute");
+        var additionalNamespaces = "";
+        var addAllServicesMethodDeclaration = "";
+        if (servicesEntryAttribute != null)
+        {
+            var prefix = servicesEntryAttribute.ConstructorArguments.First().Value.ToString();
+            var referencesNames = context.Compilation.References.Where(r => r.Display.StartsWith(prefix)).ToArray();
+            additionalNamespaces = Environment.NewLine + string.Join(Environment.NewLine, referencesNames.Select(r => $"using {r.Display};"));
+            var addServicesLines = Environment.NewLine + string.Join(Environment.NewLine, referencesNames.Select(r => $"        services.{GetAddServicesMethodName(r.Display)}();"));
+            addAllServicesMethodDeclaration = $$"""
+
+
+                    public static IServiceCollection AddAllServices(this IServiceCollection services)
+                    {
+                        services.{{addServicesName}}();{{addServicesLines}}
+                        return services;
+                    }
+                """;
+        }
         string source = $$"""
             // Auto-generated code
             using Microsoft.Extensions.DependencyInjection;
-            using System.Diagnostics.CodeAnalysis;
+            using System.Diagnostics.CodeAnalysis;{{additionalNamespaces}}
             namespace {{assemblyName}};
             [ExcludeFromCodeCoverage]
             public static partial class ServiceCollectionExtensions
@@ -26,13 +43,15 @@ public class ServiceCollectionExtensionsGenerator : ISourceGenerator
                 {
                     {{ToAddServices(context,syntaxReceiver.AnnotatedServices)}}
                     return services;
-                }
+                }{{addAllServicesMethodDeclaration}}
             }
             """;
 
         context.AddSource("ServiceCollectionExtensions.g.cs", source);
     }
 
+    private static string GetAddServicesMethodName(string assemblyName) => $"Add{assemblyName.Replace(".", "")}Services";
+    
     string ToAddServices(GeneratorExecutionContext context, List<ClassDeclarationSyntax> annotatedServices)
     {
         var lines = new List<string>();
@@ -72,7 +91,7 @@ class SyntaxReceiver : ISyntaxReceiver
     private static readonly string _scopedAttributeName = nameof(ScopedAttribute<object>).Replace("Attribute", "");
     private static readonly string _singletonAttributeName = nameof(SingletonAttribute<object>).Replace("Attribute", "");
     private static readonly string _transientAttributeName = nameof(TransientAttribute<object>).Replace("Attribute", "");
-
+    
     public void OnVisitSyntaxNode(SyntaxNode syntaxNode)
     {
         if (syntaxNode is ClassDeclarationSyntax classDeclarationSyntax)
