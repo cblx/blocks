@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Cblx.Blocks.Helpers;
 using Cblx.Blocks.Models;
 using Microsoft.CodeAnalysis;
@@ -44,4 +45,5 @@ internal record ReturnDeclarationDto
     public bool HasVoid { get; set; }
     public bool HasAsync { get; set; }
     public string Namespace { get; set; } = string.Empty;
+
 }

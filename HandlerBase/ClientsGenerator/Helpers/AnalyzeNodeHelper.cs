@@ -1,6 +1,7 @@
 ﻿using Cblx.Blocks.Factories;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using System;
 
 namespace Cblx.Blocks.Helpers;
 
@@ -12,6 +13,9 @@ internal static class AnalyzeNodeHelper
         {
             case IdentifierNameSyntax syntax:
                 declarationDto.ProcessIdentifierNameSyntax(syntax, context);
+                break;
+            case PredefinedTypeSyntax syntax:
+                declarationDto.ProcessPredefinedTypeSyntax(syntax);
                 break;
             case GenericNameSyntax syntax:
                 declarationDto.ProcessGenericNameSyntax(syntax);
@@ -37,6 +41,21 @@ internal static class AnalyzeNodeHelper
         }
 
         declarationDto.Namespace = CodeHelpers.GetNamespace(context,syntax)!;
+        declarationDto.TypeName = name;
+        declarationDto.HasVoid = false;
+
+        if (!declarationDto.ManipulationFormat.Contains(name))
+        {
+            declarationDto.ManipulationFormat = name;
+        }
+    }
+
+    private static void ProcessPredefinedTypeSyntax(
+        this ReturnDeclarationDto declarationDto, 
+        PredefinedTypeSyntax syntax)
+    {
+        var name = syntax.ToFullString();
+
         declarationDto.TypeName = name;
         declarationDto.HasVoid = false;
 

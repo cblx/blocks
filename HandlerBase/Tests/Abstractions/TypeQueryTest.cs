@@ -1,6 +1,6 @@
 ﻿namespace Cblx.Blocks.HandlerBase.Tests.Abstractions;
 
-public enum TypeQuery
+public enum TypeQueryTest
 {
     Ready = 1,
     Read = 2,

@@ -258,7 +258,7 @@ public class QueryStringHelperV2Tests
     {
         var obj = new
         {
-            PropertyListEnum = new [] {TypeQuery.Dongo, TypeQuery.Read, TypeQuery.Ready}
+            PropertyListEnum = new [] {TypeQueryTest.Dongo, TypeQueryTest.Read, TypeQueryTest.Ready}
         };
 
         var query = QueryStringHelper.ToQueryString(obj);
@@ -271,7 +271,7 @@ public class QueryStringHelperV2Tests
     {
         var obj = new
         {
-            PropertyListEnum = Array.Empty<TypeQuery>()
+            PropertyListEnum = Array.Empty<TypeQueryTest>()
         };
 
         var query = QueryStringHelper.ToQueryString(obj);
