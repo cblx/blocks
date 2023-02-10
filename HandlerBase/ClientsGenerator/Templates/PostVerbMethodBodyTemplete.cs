@@ -32,7 +32,7 @@ internal static class PostVerbMethodBodyTemplete
     {
         var route = StringHelper.CreateEndPointRoute(handler);
         var parameterName = handler.HandlerAction.ParameterDeclaration?.Name;
-        var manipulationFormat = handler.HandlerAction.ReturnDeclaration.ManipulationFormat;
+        var manipulationFormat = handler.HandlerAction.ReturnDeclaration.ManipulationType;
 
         return $"""
                 var responseMessage = await _httpClient.PostAsJsonAsync("{route}", {parameterName});
@@ -53,7 +53,7 @@ internal static class PostVerbMethodBodyTemplete
     private static string CreateMethodBodyWithReturnWithoutParameter(HandlerDeclaration handler)
     {
         var route = StringHelper.CreateEndPointRoute(handler);
-        var manipulationFormat = handler.HandlerAction.ReturnDeclaration.ManipulationFormat;
+        var manipulationFormat = handler.HandlerAction.ReturnDeclaration.ManipulationType;
 
         return $"""
                 var responseMessage = await _httpClient.PostAsync("{route}", null);

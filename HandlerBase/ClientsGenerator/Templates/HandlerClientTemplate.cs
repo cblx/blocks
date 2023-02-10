@@ -19,7 +19,7 @@ internal static class HandlerClientTemplate
             using System.Net.Http.Json;
             using System.Diagnostics.CodeAnalysis;
             using Cblx.Blocks;
-            {{CreateUsingsIfNotEquals(handler.HandlerAction.ParameterDeclaration?.Namespace, handler.HandlerAction.ReturnDeclaration.Namespace, handler.HandlerNamespace)}}
+            {{CreateUsesIfNotEquals(handler.HandlerAction.ParameterDeclaration?.Namespace, handler.HandlerAction.ReturnDeclaration.Uses, handler.HandlerNamespace)}}
 
             namespace {{handler.HandlerNamespace}};
 
@@ -29,7 +29,7 @@ internal static class HandlerClientTemplate
                 private readonly HttpClient _httpClient;
                 public {{handler.ImplementationName}}Client(HttpClient httpClient) => _httpClient = httpClient;
 
-                public {{handler.CreateAsyncToken()}} {{handler.HandlerAction.ReturnDeclaration.MethodReturnFormat}} {{handler.HandlerAction.Name}}({{handler.HandlerAction.ParameterDeclaration?.MethodParameterFormat}})
+                public {{handler.CreateAsyncToken()}} {{handler.HandlerAction.ReturnDeclaration.MethodReturnType}} {{handler.HandlerAction.Name}}({{handler.HandlerAction.ParameterDeclaration?.MethodParameterFormat}})
                 {
 
             """);
@@ -65,25 +65,17 @@ internal static class HandlerClientTemplate
     private static void CreateDeleteMethodBody(StringBuilder builder, HandlerDeclaration handler) 
         => builder.AppendLine(DeleteVerbMethodBodyTemplete.Create(handler));
 
-    private static string CreateUsingsIfNotEquals(string? namespaceParameter, string? namespaceReturn, string handlerNamespace)
+    private static string CreateUsesIfNotEquals(string? namespaceParameter, IEnumerable<string> returnUses, string handlerNamespace)
     {
-        var listNamespaces = new List<string>
-        {
-            handlerNamespace
-        };
-
-        if (!string.IsNullOrEmpty(namespaceParameter) && !listNamespaces.Contains(namespaceParameter!))
-        {
-            listNamespaces.Add(namespaceParameter!);
-        }
-
-        if (!string.IsNullOrEmpty(namespaceReturn) &&  !listNamespaces.Contains(namespaceReturn!))
-        {
-            listNamespaces.Add(namespaceReturn!);
-        }
-
-        listNamespaces.Remove(handlerNamespace);
-        listNamespaces = listNamespaces.Select(n => $"using {n};").ToList();
+        var listNamespaces = new List<string> { handlerNamespace };
+        listNamespaces.AddRange(returnUses);
+        listNamespaces.Add(namespaceParameter ?? string.Empty);
+        
+        listNamespaces = listNamespaces
+            .Where(u => string.IsNullOrWhiteSpace(u) is false)
+            .Distinct()
+            .Select(n => $"using {n};")
+            .ToList();
 
         return listNamespaces.Any() ? string.Join(Environment.NewLine, listNamespaces) : string.Empty;
     }

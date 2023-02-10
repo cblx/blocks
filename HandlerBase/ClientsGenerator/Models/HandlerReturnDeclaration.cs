@@ -1,27 +1,26 @@
-﻿namespace Cblx.Blocks.Models;
+﻿using System.Collections.Generic;
+
+namespace Cblx.Blocks.Models;
 
 internal class HandlerReturnDeclaration
 {
     public HandlerReturnDeclaration(
-        string typeName,
-        string methodReturnFormat,
-        string manipulationFormat,
+        string methodReturnType,
+        string manipulationType,
         bool hasVoid,
-        bool hasAsync,
-        string returnNamespace)
+        bool hasAsync, 
+        List<string> uses)
     {
-        TypeName = typeName;
-        MethodReturnFormat = methodReturnFormat;
-        ManipulationFormat = manipulationFormat;
+        MethodReturnType = methodReturnType;
+        ManipulationType = manipulationType;
         HasVoid = hasVoid;
         HasAsync = hasAsync;
-        Namespace = returnNamespace;
+        Uses = uses;
     }
 
-    public string TypeName { get; }
-    public string MethodReturnFormat { get; }
-    public string ManipulationFormat { get; }
-    public string Namespace { get; }
+    public string MethodReturnType { get; }
+    public string ManipulationType { get; }
+    public List<string> Uses { get; }
 
     public bool HasVoid { get; }
     public bool HasAsync { get; }

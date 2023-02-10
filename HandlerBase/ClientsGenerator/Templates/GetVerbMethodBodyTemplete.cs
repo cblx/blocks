@@ -20,7 +20,7 @@ internal static class GetVerbMethodBodyTemplete
     private static string CreateMethodBodyWithoutParameter(HandlerDeclaration handler)
     {
         return $"""
-                return (await _httpClient.GetFromJsonAsync<{handler.HandlerAction.ReturnDeclaration.ManipulationFormat}>($"{StringHelper.CreateEndPointRoute(handler)}"))!;
+                return (await _httpClient.GetFromJsonAsync<{handler.HandlerAction.ReturnDeclaration.ManipulationType}>($"{StringHelper.CreateEndPointRoute(handler)}"))!;
         """;
     }
 
@@ -28,7 +28,7 @@ internal static class GetVerbMethodBodyTemplete
     {
         return $$"""
                 var queryString = QueryStringHelper.ToQueryString({{handler.HandlerAction.ParameterDeclaration?.Name}});
-                return (await _httpClient.GetFromJsonAsync<{{handler.HandlerAction.ReturnDeclaration.ManipulationFormat}}>($"{{StringHelper.CreateEndPointRoute(handler)}}?{queryString}"))!;
+                return (await _httpClient.GetFromJsonAsync<{{handler.HandlerAction.ReturnDeclaration.ManipulationType}}>($"{{StringHelper.CreateEndPointRoute(handler)}}?{queryString}"))!;
         """;
     }
 }

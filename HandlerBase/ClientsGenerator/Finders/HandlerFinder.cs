@@ -11,7 +11,7 @@ internal sealed class HandlerFinder : ISyntaxReceiver
 
     public HandlerFinder() => _handlers = new List<InterfaceDeclarationSyntax>();
 
-    public IReadOnlyCollection<InterfaceDeclarationSyntax> Handlers => _handlers;
+    public IEnumerable<InterfaceDeclarationSyntax> Handlers => _handlers;
 
     public void OnVisitSyntaxNode(SyntaxNode syntaxNode)
     {

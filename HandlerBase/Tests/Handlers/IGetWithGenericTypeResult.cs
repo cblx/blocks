@@ -1,4 +1,6 @@
-﻿namespace Cblx.Blocks.HandlerBase.Tests.Handlers;
+﻿
+
+namespace Cblx.Blocks.HandlerBase.Tests.Handlers;
 
 
 [GenerateClient]
@@ -10,5 +12,18 @@ public interface IGetWithGenericTypeResult
 [GenerateClient]
 public interface IGetWithGenericTypeIntResult
 {
-    Task<WithGeneric<int>[]> GetAsync();
+    ValueTask<WithGeneric<int>[]> GetAsync();
+}
+
+
+[GenerateClient]
+public interface IGetWithGenericTypeObjectResult
+{
+    Task<WithGeneric<int>> GetAsync();
+}
+
+[GenerateClient]
+public interface IGetWithGenericTypeProductResult
+{
+    Task<WithGeneric<ObterProdutoResponse>> GetAsync();
 }

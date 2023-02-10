@@ -32,7 +32,7 @@ internal static class DeleteVerbMethodBodyTemplete
     {
         var route = StringHelper.CreateEndPointRoute(handler);
         var parameterName = handler.HandlerAction.ParameterDeclaration?.Name;
-        var manipulationFormat = handler.HandlerAction.ReturnDeclaration.ManipulationFormat;
+        var manipulationFormat = handler.HandlerAction.ReturnDeclaration.ManipulationType;
 
         return $$"""
                 var queryString = QueryStringHelper.ToQueryString({{parameterName}});
@@ -55,7 +55,7 @@ internal static class DeleteVerbMethodBodyTemplete
     private static string CreateMethodBodyWithReturnWithoutParameter(HandlerDeclaration handler)
     {
         var route = StringHelper.CreateEndPointRoute(handler);
-        var manipulationFormat = handler.HandlerAction.ReturnDeclaration.ManipulationFormat;
+        var manipulationFormat = handler.HandlerAction.ReturnDeclaration.ManipulationType;
 
         return $"""
                 var responseMessage = await _httpClient.DeleteAsync("{route}");

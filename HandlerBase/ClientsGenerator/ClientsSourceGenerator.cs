@@ -20,7 +20,7 @@ public class ClientsSourceGenerator : ISourceGenerator
 #if DEBUG
         if (!Debugger.IsAttached)
         {
-            Debugger.Launch();
+            //Debugger.Launch();
         }
 #endif
 
