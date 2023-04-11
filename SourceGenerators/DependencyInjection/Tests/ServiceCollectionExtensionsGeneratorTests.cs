@@ -25,9 +25,9 @@ public class ServiceCollectionExtensionsGeneratorTests
             // Auto-generated code
             using Microsoft.Extensions.DependencyInjection;
             using System.Diagnostics.CodeAnalysis;
-            namespace TestProject;
+            namespace Cblx.Blocks.DependencyInjection.Generated;
             [ExcludeFromCodeCoverage]
-            public static partial class ServiceCollectionExtensions
+            public static partial class TestProjectServiceCollectionExtensions
             {
                 public static IServiceCollection AddTestProjectServices(this IServiceCollection services)
                 {

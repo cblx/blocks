@@ -10,19 +10,17 @@ public class AssemblyMarkerGenerator : ISourceGenerator
         string assemblyName = context.Compilation.AssemblyName;
         
         string markerName = $"{assemblyName.Replace(".", "")}Marker";
-#pragma warning disable S2479 // Whitespace and control characters in string literals should be explicit
         string source = $$""" 
             // Auto-generated code
             using System.Reflection;
             using System.Diagnostics.CodeAnalysis;
-            namespace {{assemblyName}};
+            namespace Cblx.Blocks.DependencyInjection.Generated;
             [ExcludeFromCodeCoverage]
             public static class {{markerName}}
             { 
                 public static Assembly Assembly = typeof({{markerName}}).Assembly; 
             }
             """;
-#pragma warning restore S2479 // Whitespace and control characters in string literals should be explicit
         context.AddSource("Marker.g.cs", source);
     }
 

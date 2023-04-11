@@ -13,7 +13,7 @@ public class AssemblyMarkerGeneratorTests
             // Auto-generated code
             using System.Reflection;
             using System.Diagnostics.CodeAnalysis;
-            namespace TestProject;
+            namespace Cblx.Blocks.DependencyInjection.Generated;
             [ExcludeFromCodeCoverage]
             public static class TestProjectMarker
             { 
