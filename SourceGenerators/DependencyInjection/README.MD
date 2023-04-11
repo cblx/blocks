@@ -1,3 +1,5 @@
+[![Nuget](https://img.shields.io/nuget/v/Cblx.Blocks.SourceGenerators.DependencyInjection)](https://www.nuget.org/packages/Cblx.Blocks.SourceGenerators.DependencyInjection)
+
 SourceGenerator para criar métodos de extensão no `IServiceCollection` para registro de serviços anotados via atributos.
 
 Ex, para registrar um serviço:
