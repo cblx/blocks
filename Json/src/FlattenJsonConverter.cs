@@ -15,7 +15,7 @@ public class FlattenJsonConverter<T> : JsonConverter<T>
         }
 
         var value = Activator.CreateInstance<T>();
-        var properties = typeof(T).GetProperties().ToDictionary(p => p.Name);
+        var properties = typeof(T).GetProperties().ToDictionary(p => p.GetCustomAttribute<JsonPropertyNameAttribute>()?.Name ?? p.Name);
         while (reader.Read())
         {
             if (reader.TokenType == JsonTokenType.EndObject)
@@ -44,7 +44,7 @@ public class FlattenJsonConverter<T> : JsonConverter<T>
                             flattenPropertyValue = Activator.CreateInstance(flattenProperty.PropertyType);
                             flattenProperty.SetValue(value, flattenPropertyValue);
                         }
-                        var nestedProperties = flattenProperty.PropertyType.GetProperties().ToDictionary(p => p.Name);
+                        var nestedProperties = flattenProperty.PropertyType.GetProperties().ToDictionary(p => p.GetCustomAttribute<JsonPropertyNameAttribute>()?.Name ?? p.Name);
                         PropertyInfo nestedProperty;
                         if (nestedProperties.TryGetValue(propertyName, out nestedProperty))
                         {
@@ -65,24 +65,27 @@ public class FlattenJsonConverter<T> : JsonConverter<T>
         var properties = typeof(T).GetProperties();
         foreach (var property in properties)
         {
+            var propertyName = property.GetCustomAttribute<JsonPropertyNameAttribute>()?.Name ?? property.Name;
             var flattenAttribute = property.GetCustomAttribute<FlattenAttribute>();
             if (flattenAttribute != null && property.PropertyType.IsClass)
             {
                 var nestedProperties = property.PropertyType.GetProperties();
                 foreach (var nestedProperty in nestedProperties)
                 {
+                    var nestedPropertyName = nestedProperty.GetCustomAttribute<JsonPropertyNameAttribute>()?.Name ?? nestedProperty.Name;
                     var nestedValue = nestedProperty.GetValue(property.GetValue(value));
-                    writer.WritePropertyName(nestedProperty.Name);
+                    writer.WritePropertyName(nestedPropertyName);
                     JsonSerializer.Serialize(writer, nestedValue, options);
                 }
             }
             else
             {
                 var propertyValue = property.GetValue(value);
-                writer.WritePropertyName(property.Name);
+                writer.WritePropertyName(propertyName);
                 JsonSerializer.Serialize(writer, propertyValue, options);
             }
         }
         writer.WriteEndObject();
     }
+
 }
