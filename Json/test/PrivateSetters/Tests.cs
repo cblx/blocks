@@ -2,7 +2,7 @@ using System.Text.Json;
 
 namespace Cblx.Blocks.Json.Tests.PrivateSetters;
 
-public class PrivateSettersTests
+public class Tests
 {
     private const string _jsonSubject  = """
         {

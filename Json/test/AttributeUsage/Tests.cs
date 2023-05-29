@@ -2,7 +2,7 @@ using System.Text.Json;
 
 namespace Cblx.Blocks.Json.Tests.AttributeUsage;
 
-public class SimpleTests
+public class Tests
 {
     private const string _jsonSubject  = """
         {

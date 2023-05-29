@@ -1,13 +1,13 @@
 using System.Text.Json;
 
-namespace Cblx.Blocks.Json.Tests.Annotated;
+namespace Cblx.Blocks.Json.Tests.Fluent;
 
-public class AnnotatedTests
+public class Tests
 {
     private const string _jsonSubject  = """
         {
-          "name": "Mary",
-          "person_street": "Elm Street"
+          "Name": "Mary",
+          "this_street": "Elm Street"
         }
         """;
 

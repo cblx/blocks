@@ -1,17 +1,24 @@
 using System.Text.Json;
 
-namespace Cblx.Blocks.Json.Tests.PrivateConstructors;
+namespace Cblx.Blocks.Json.Tests.Simple;
 
-public class PrivateConstructorsTests
+public class Tests
 {
-    private const string _jsonSubject = """
+    private const string _jsonSubject  = """
         {
           "Name": "Mary",
           "Street": "Elm Street"
         }
         """;
 
-    private readonly Person _personSubject = (Person)Activator.CreateInstance(typeof(Person), true)!;
+    private readonly Person _personSubject = new Person
+    {
+        Name = "Mary",
+        Address = new Address
+        {
+            Street = "Elm Street"
+        }
+    };
 
     [Fact]
     public void Serializing()
