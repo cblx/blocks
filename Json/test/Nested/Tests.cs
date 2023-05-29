@@ -1,4 +1,4 @@
-using System.Text.Json;
+ï»¿using System.Text.Json;
 
 namespace Cblx.Blocks.Json.Tests.Nested;
 
@@ -8,7 +8,7 @@ public class Tests
         {
           "Name": "Mary",
           "Street": "Elm Street",
-          "CityName": "São Paulo",
+          "CityName": "S\u00E3o Paulo",
           "Country": "Brazil"
         }
         """;
@@ -21,11 +21,20 @@ public class Tests
             Street = "Elm Street",
             City = new City
             {
-                CityName = "São Paulo",
+                CityName = "SÃ£o Paulo",
                 Country = "Brazil"
             }
         }
     };
+
+    [Fact]
+    public void CheckSimpleSerializationWithDiacritics()
+    {
+        string str = "SÃ£o Paulo";
+        Assert.Equal("""
+            "S\u00E3o Paulo"
+            """, JsonSerializer.Serialize(str));
+    }
 
     [Fact]
     public void Serializing()

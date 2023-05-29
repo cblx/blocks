@@ -7,6 +7,7 @@ public class Tests
     private const string _jsonSubject  = """
         {
           "Name": "Mary",
+          "Age": 32,
           "Street": "Elm Street"
         }
         """;
@@ -14,6 +15,7 @@ public class Tests
     private readonly Person _personSubject = new Person
     {
         Name = "Mary",
+        Age = 32,
         Address = new Address
         {
             Street = "Elm Street"
