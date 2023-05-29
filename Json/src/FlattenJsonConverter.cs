@@ -4,7 +4,7 @@ using System.Reflection;
 
 namespace Cblx.Blocks;
 
-// 100% gerado pela AI do Bing
+// Inicialmente gerado pela AI do Bing, modificado manualmente para suportar Fluent e construtor privado
 public class FlattenJsonConverter<T> : JsonConverter<T>
 {
     public override T Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
@@ -33,8 +33,7 @@ public class FlattenJsonConverter<T> : JsonConverter<T>
             {
                 var propertyName = reader.GetString();
                 reader.Read();
-                PropertyInfo property;
-                if (properties.TryGetValue(propertyName, out property))
+                if (properties.TryGetValue(propertyName!, out PropertyInfo? property))
                 {
                     var propertyValue = JsonSerializer.Deserialize(ref reader, property.PropertyType, options);
                     property.SetValue(value, propertyValue);
@@ -47,12 +46,18 @@ public class FlattenJsonConverter<T> : JsonConverter<T>
                         var flattenPropertyValue = flattenProperty.GetValue(value);
                         if (flattenPropertyValue == null)
                         {
-                            flattenPropertyValue = options.GetTypeInfo(flattenProperty.PropertyType).CreateObject();
+                            flattenPropertyValue = options.GetTypeInfo(flattenProperty.PropertyType).CreateObject!();
                             flattenProperty.SetValue(value, flattenPropertyValue);
                         }
                         var nestedProperties = flattenProperty.PropertyType.GetProperties().ToDictionary(p => p.GetCustomAttribute<JsonPropertyNameAttribute>()?.Name ?? p.Name);
-                        PropertyInfo nestedProperty;
-                        if (nestedProperties.TryGetValue(propertyName, out nestedProperty))
+
+                        if (flattenProperty.GetCustomAttribute<FlattenAttribute>() is FlattenAttribute flattenAttributeGeneric && flattenAttributeGeneric.ConfigurationType != null)
+                        {
+                            var configuration = Activator.CreateInstance(flattenAttributeGeneric.ConfigurationType) as FlattenJsonConfiguration;
+                            nestedProperties = nestedProperties.ToDictionary(kvp => configuration?.GetJsonPropertyName(kvp.Key) ?? kvp.Key, kvp => kvp.Value);
+                        }
+
+                        if (nestedProperties.TryGetValue(propertyName!, out PropertyInfo? nestedProperty))
                         {
                             var propertyValue = JsonSerializer.Deserialize(ref reader, nestedProperty.PropertyType, options);
                             nestedProperty.SetValue(flattenPropertyValue, propertyValue);
@@ -79,6 +84,13 @@ public class FlattenJsonConverter<T> : JsonConverter<T>
                 foreach (var nestedProperty in nestedProperties)
                 {
                     var nestedPropertyName = nestedProperty.GetCustomAttribute<JsonPropertyNameAttribute>()?.Name ?? nestedProperty.Name;
+
+                    if (flattenAttribute is FlattenAttribute flattenAttributeGeneric && flattenAttributeGeneric.ConfigurationType != null)
+                    {
+                        var configuration = Activator.CreateInstance(flattenAttributeGeneric.ConfigurationType) as FlattenJsonConfiguration;
+                        nestedPropertyName = configuration?.GetJsonPropertyName(nestedPropertyName) ?? nestedPropertyName;
+                    }
+
                     var nestedValue = nestedProperty.GetValue(property.GetValue(value));
                     writer.WritePropertyName(nestedPropertyName);
                     JsonSerializer.Serialize(writer, nestedValue, options);
