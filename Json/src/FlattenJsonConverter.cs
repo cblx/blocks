@@ -14,7 +14,13 @@ public class FlattenJsonConverter<T> : JsonConverter<T>
             throw new JsonException();
         }
 
-        var value = Activator.CreateInstance<T>();
+        // Esse converter também tem que fornecer a habilidade de desserialização
+        // usando construtores não públicos.
+        // A solução utilizando o TypeInfoResolver.Modifiers não vale aqui,
+        // pois ao adicionar qualquer Converter customizado a lib muda o Kind para .None
+        // e desabilita a possibilidade de setarmos o .CreateObject no JsonTypeInfo.
+        // Isso deve ocorrer também com as propriedades com setters privados.
+        var value = (T)Activator.CreateInstance(typeof(T), nonPublic: true)!;
         var properties = typeof(T).GetProperties().ToDictionary(p => p.GetCustomAttribute<JsonPropertyNameAttribute>()?.Name ?? p.Name);
         while (reader.Read())
         {
@@ -41,7 +47,7 @@ public class FlattenJsonConverter<T> : JsonConverter<T>
                         var flattenPropertyValue = flattenProperty.GetValue(value);
                         if (flattenPropertyValue == null)
                         {
-                            flattenPropertyValue = Activator.CreateInstance(flattenProperty.PropertyType);
+                            flattenPropertyValue = options.GetTypeInfo(flattenProperty.PropertyType).CreateObject();
                             flattenProperty.SetValue(value, flattenPropertyValue);
                         }
                         var nestedProperties = flattenProperty.PropertyType.GetProperties().ToDictionary(p => p.GetCustomAttribute<JsonPropertyNameAttribute>()?.Name ?? p.Name);
