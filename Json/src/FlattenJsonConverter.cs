@@ -25,10 +25,10 @@ public class FlattenJsonConverter<T> : JsonConverter<T>
         ReadProperties(ref reader, value, options);
         return value;
     }
-    
-    private void ReadProperties(ref Utf8JsonReader reader, object value, JsonSerializerOptions options)
+
+    private void ReadProperties(ref Utf8JsonReader reader, object value, JsonSerializerOptions options, FlattenJsonConfiguration configuration = null)
     {
-        var properties = value.GetType().GetProperties().ToDictionary(p => p.GetCustomAttribute<JsonPropertyNameAttribute>()?.Name ?? p.Name);
+        var properties = value.GetType().GetProperties().ToDictionary(p => p.GetCustomAttribute<JsonPropertyNameAttribute>()?.Name ?? (configuration?.GetJsonPropertyName(p.Name) ?? p.Name));
         while (reader.Read())
         {
             if (reader.TokenType == JsonTokenType.EndObject)
@@ -57,11 +57,11 @@ public class FlattenJsonConverter<T> : JsonConverter<T>
                             flattenPropertyValue = options.GetTypeInfo(flattenProperty.PropertyType).CreateObject();
                             flattenProperty.SetValue(value, flattenPropertyValue);
                         }
-                        var nestedProperties = flattenProperty.PropertyType.GetProperties().ToDictionary(p => p.GetCustomAttribute<JsonPropertyNameAttribute>()?.Name ?? p.Name);
+                        var nestedProperties = flattenProperty.PropertyType.GetProperties().ToDictionary(p => p.GetCustomAttribute<JsonPropertyNameAttribute>()?.Name ?? (configuration?.GetJsonPropertyName(p.Name) ?? p.Name));
 
                         if (flattenProperty.GetCustomAttribute<FlattenAttribute>() is FlattenAttribute flattenAttributeGeneric && flattenAttributeGeneric.ConfigurationType != null)
                         {
-                            var configuration = Activator.CreateInstance(flattenAttributeGeneric.ConfigurationType) as FlattenJsonConfiguration;
+                            configuration = Activator.CreateInstance(flattenAttributeGeneric.ConfigurationType) as FlattenJsonConfiguration;
                             nestedProperties = nestedProperties.ToDictionary(kvp => configuration?.GetJsonPropertyName(kvp.Key) ?? kvp.Key, kvp => kvp.Value);
                         }
 
@@ -70,19 +70,20 @@ public class FlattenJsonConverter<T> : JsonConverter<T>
                         {
                             var propertyValue = JsonSerializer.Deserialize(ref reader, nestedProperty.PropertyType, options);
                             nestedProperty.SetValue(flattenPropertyValue, propertyValue);
-                            ReadProperties(ref reader, flattenPropertyValue, options); // Chamar ReadProperties novamente para processar as propriedades aninhadas
+                            ReadProperties(ref reader, flattenPropertyValue, options, configuration); // Chamar ReadProperties novamente para processar as propriedades aninhadas
                             break;
                         }
                         else
                         {
-                            ReadProperties(ref reader, flattenPropertyValue, options);
+                            ReadProperties(ref reader, flattenPropertyValue, options, configuration);
                         }
                     }
                 }
             }
         }
     }
-   
+
+
     public override void Write(Utf8JsonWriter writer, T value, JsonSerializerOptions options)
     {
         writer.WriteStartObject();
