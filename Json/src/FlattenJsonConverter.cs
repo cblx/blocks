@@ -120,7 +120,12 @@ public class FlattenJsonConverter<T> : JsonConverter<T>
                     writer.WritePropertyName(propertyName);
                     JsonSerializer.Serialize(writer, propertyValue, options);
                 }
+                else
+                {
+                    writer.WriteNull(propertyName);
+                }
             }
         }
     }
+
 }
