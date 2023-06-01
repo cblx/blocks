@@ -15,4 +15,13 @@ public static class Fixtures
         options.Converters.Add(converter);
         return options;
     }
+
+    public static JsonSerializerOptions CreateOptions()
+    {
+        var options = new JsonSerializerOptions
+        {
+            WriteIndented = true
+        };
+        return options;
+    }
 }

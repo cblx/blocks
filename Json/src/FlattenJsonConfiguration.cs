@@ -5,7 +5,7 @@ namespace Cblx.Blocks;
 public abstract class FlattenJsonConfiguration<T> : FlattenJsonConfiguration
      where T : class
 {
-    public FlattenJsonConfiguration<T> HasJsonPropertyName(Expression<Func<T, object>> member, string jsonPropertyName)
+    public FlattenJsonConfiguration<T> HasJsonPropertyName(Expression<Func<T, object?>> member, string jsonPropertyName)
     {
         if (member.Body is MemberExpression memberExpression)
         {

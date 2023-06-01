@@ -11,7 +11,7 @@ public class Tests
         }
         """;
 
-    private readonly Person _personSubject = new Person
+    private readonly Person _personSubject = new ()
     {
         Name = "Mary",
         Address = new Address
