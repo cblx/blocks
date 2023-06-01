@@ -7,7 +7,7 @@ public abstract class AtendimentoDoConsumidor
 {
     [JsonPropertyName(Cols.Id)]
     [JsonInclude]
-    public Guid Id { get; protected set; } = Guid.NewGuid();
+    public TbId Id { get; protected set; } = TbId.NewId();
 
     [JsonPropertyName(Cols.TipoDeAtendimento)]
     [JsonInclude]

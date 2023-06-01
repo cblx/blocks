@@ -31,9 +31,9 @@ public partial class Consulta : AtendimentoRelacionadoComFornecedor
     public Consulta() { }
 
     public Consulta(
-        Guid atendimentoId,
+        TbId atendimentoId,
         Guid consumidorId,
-        Guid? fornecedorId,
+        TbId? fornecedorId,
         Guid? consultaOriginalId,
         string? nomeDoFornecedorNaoEncontrado,
         Classificacao classificacao,
