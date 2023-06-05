@@ -11,3 +11,13 @@ public class FlattenRootAttribute : JsonConverterAttribute
 
     public Type? ConfigurationType { get; set; }
 }
+
+[AttributeUsage(AttributeTargets.Class)]
+public class FlattenRootAttribute<T> : FlattenRootAttribute
+    where T : FlattenJsonConfiguration
+{
+    public FlattenRootAttribute()
+    {
+        ConfigurationType = typeof(T);
+    }
+}

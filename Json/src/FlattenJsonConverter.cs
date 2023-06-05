@@ -20,13 +20,18 @@ public class FlattenJsonConverter<T> : JsonConverter<T>
         // e desabilita a possibilidade de setarmos o .CreateObject no JsonTypeInfo.
         // Isso deve ocorrer também com as propriedades com setters privados.
         var value = (T)Activator.CreateInstance(typeof(T), nonPublic: true)!;
-        ReadProperties(ref reader, value, options);
+        var configurationType = typeof(T).GetCustomAttribute<FlattenRootAttribute>()?.ConfigurationType;
+        var configuration = configurationType is null ? null : Activator.CreateInstance(configurationType) as FlattenJsonConfiguration;
+        ReadProperties(ref reader, value, options, configuration);
         return value;
     }
 
-    private static void ReadProperties(ref Utf8JsonReader reader, object value, JsonSerializerOptions options)
+    private static void ReadProperties(ref Utf8JsonReader reader,
+                                       object value,
+                                       JsonSerializerOptions options,
+                                       FlattenJsonConfiguration? configuration)
     {
-        var properties = GetFlattenedProperties(value);
+        var properties = GetFlattenedProperties(value, configuration);
 
         while (reader.Read())
         {
@@ -96,11 +101,19 @@ public class FlattenJsonConverter<T> : JsonConverter<T>
     public override void Write(Utf8JsonWriter writer, T value, JsonSerializerOptions options)
     {
         writer.WriteStartObject();
-        WriteProperties(writer, value, options);
+        var configurationType = typeof(T).GetCustomAttribute<FlattenRootAttribute>()?.ConfigurationType;
+        var configuration = configurationType is null ? null : Activator.CreateInstance(configurationType) as FlattenJsonConfiguration;
+        WriteProperties(writer, value, options, configuration);
         writer.WriteEndObject();
     }
 
-    private static void WriteProperties(Utf8JsonWriter writer, object value, JsonSerializerOptions options, FlattenAttribute? flattenAttribute = null)
+    private static void WriteProperties(
+        Utf8JsonWriter writer,
+        object value,
+        JsonSerializerOptions options,
+        //FlattenAttribute? flattenAttribute = null,
+        FlattenJsonConfiguration? configuration = null
+        )
     {
         var properties = value.GetType().GetProperties();
         foreach (var property in properties)
@@ -112,14 +125,15 @@ public class FlattenJsonConverter<T> : JsonConverter<T>
                 var nestedValue = property.GetValue(value);
                 if (nestedValue != null)
                 {
-                    WriteProperties(writer, nestedValue, options, currentFlattenAttribute);
+                    var nestedConfigurationType = currentFlattenAttribute.ConfigurationType;
+                    var nestedConfiguration = nestedConfigurationType is null ? null : Activator.CreateInstance(nestedConfigurationType) as FlattenJsonConfiguration;
+                    WriteProperties(writer, nestedValue, options, nestedConfiguration);
                 }
             }
             else
             {
-                if (flattenAttribute is FlattenAttribute flattenAttributeGeneric && flattenAttributeGeneric.ConfigurationType != null)
+                if (configuration is not null)
                 {
-                    var configuration = Activator.CreateInstance(flattenAttributeGeneric.ConfigurationType) as FlattenJsonConfiguration;
                     propertyName = configuration?.GetJsonPropertyName(propertyName) ?? propertyName;
                 }
 
