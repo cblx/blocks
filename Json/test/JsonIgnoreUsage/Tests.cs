@@ -8,6 +8,7 @@ public class Tests
         {
           "Name": "Mary",
           "Age": 32,
+          "Description": "desc",
           "Street": "Elm Street"
         }
         """;
@@ -18,6 +19,7 @@ public class Tests
         Name = "Mary",
         Age = 32,
         InternalInfo = "This should not be serialized",
+        Description = "desc",
         Address = new Address
         {
             Street = "Elm Street"
@@ -29,7 +31,8 @@ public class Tests
           "Name": "Mary",
           "Age": 32,
           "Street": "Elm Street",
-          "InternalInfo": "This should not be serialized"
+          "InternalInfo": "This should not be serialized",
+          "Description": "desc"
         }
         """;
 
@@ -38,6 +41,7 @@ public class Tests
         Name = "Mary",
         Age = 32,
         InternalInfo = null!,
+        Description = "desc",
         Address = new Address
         {
             Street = "Elm Street"

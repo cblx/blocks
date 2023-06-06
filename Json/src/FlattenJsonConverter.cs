@@ -55,7 +55,7 @@ public class FlattenJsonConverter<T> : JsonConverter<T>
                 }
                 else
                 {
-                    reader.Skip(); // Skip the property value if it doesn't match any property in the dictionary
+                    reader.TrySkip(); // Skip the property value if it doesn't match any property in the dictionary
                 }
             }
         }

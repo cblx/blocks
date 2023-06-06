@@ -8,6 +8,9 @@ public class Person
     public required int Age { get; set; }
     [JsonIgnore]
     public required string InternalInfo { get; set; }
+
+    public required string Description { get; set; }
+
     [Flatten]
     public required Address Address { get; set; }
 }
