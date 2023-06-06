@@ -1,6 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 using System.Text.Json;
 using System.Reflection;
+using System.Reflection.Emit;
 
 namespace Cblx.Blocks;
 
@@ -48,7 +49,9 @@ public class FlattenJsonConverter<T> : JsonConverter<T>
                 if (properties.TryGetValue(propertyName, out var propertyInfo))
                 {
                     var propertyValue = JsonSerializer.Deserialize(ref reader, propertyInfo.Property.PropertyType, options);
-                    propertyInfo.Property.DeclaringType!.GetProperty(propertyInfo.Property.Name)!.SetValue(propertyInfo.Instance, propertyValue);
+                    propertyInfo.Property.DeclaringType!
+                        .GetProperty(propertyInfo.Property.Name)!
+                        .SetValue(propertyInfo.Instance, propertyValue);
                 }
                 else
                 {
@@ -57,6 +60,11 @@ public class FlattenJsonConverter<T> : JsonConverter<T>
             }
         }
     }
+   
+    private static bool ShouldIgnoreProperty(PropertyInfo property)
+    {
+        return property.GetCustomAttribute<JsonIgnoreAttribute>() is not null;
+    }
 
     private static Dictionary<string, (PropertyInfo Property, object Instance)> GetFlattenedProperties(object value, FlattenJsonConfiguration? configuration = null)
     {
@@ -64,14 +72,17 @@ public class FlattenJsonConverter<T> : JsonConverter<T>
 
         foreach (var property in value.GetType().GetProperties())
         {
-           
+            if(ShouldIgnoreProperty(property))
+            {
+                continue;
+            }
             if (property.GetCustomAttribute<FlattenAttribute>() is { } flattenAttribute && property.PropertyType.IsClass)
             {
                 var nestedType = property.PropertyType;
                 var nestedInstance = Activator.CreateInstance(nestedType, true)!;
                 property.SetValue(value, nestedInstance);
-                var propConfiguration = 
-                    flattenAttribute.ConfigurationType == null ? 
+                var propConfiguration =
+                    flattenAttribute.ConfigurationType == null ?
                         configuration : (FlattenJsonConfiguration)Activator.CreateInstance(flattenAttribute.ConfigurationType)!;
                 var nestedProperties = GetFlattenedProperties(nestedInstance, propConfiguration);
                 foreach (var nestedProperty in nestedProperties)
@@ -111,13 +122,18 @@ public class FlattenJsonConverter<T> : JsonConverter<T>
         Utf8JsonWriter writer,
         object value,
         JsonSerializerOptions options,
-        //FlattenAttribute? flattenAttribute = null,
         FlattenJsonConfiguration? configuration = null
         )
     {
+
         var properties = value.GetType().GetProperties();
+
         foreach (var property in properties)
         {
+            if(ShouldIgnoreProperty(property))
+            {
+                continue;
+            }
             var propertyName = property.GetCustomAttribute<JsonPropertyNameAttribute>()?.Name ?? property.Name;
             var currentFlattenAttribute = property.GetCustomAttribute<FlattenAttribute>();
             if (currentFlattenAttribute != null && property.PropertyType.IsClass)
