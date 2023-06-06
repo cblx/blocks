@@ -7,21 +7,12 @@ namespace Cblx.Blocks.Json.Tests.RealWorld.Case2;
 public class Tests
 {
     [Theory]
-    [InlineData(_jsonSubject)]
+    [InlineData(_jsonSubject)] // Fails when using .Skip instead of .TrySkip
     [InlineData(_jsonSubject2)]
     public async Task Deserializing(string json)
     {
-        var stringContent = new StringContent(json, Encoding.UTF8, "application/json");
-        var jsonSerializerOptions = new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true,
-            TypeInfoResolver = JsonContractBuilder.CreateContract()
-        };
-        jsonSerializerOptions.Converters.Add(new DateOnlyJsonConverter());
-        var deserializing = async () => JsonSerializer.DeserializeAsync<Result>(
-            await stringContent.ReadAsStreamAsync(),
-            jsonSerializerOptions
-        );
+        var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes(json));
+        var deserializing = async () => await JsonSerializer.DeserializeAsync<Result>(memoryStream);
         await deserializing.Should().NotThrowAsync();
     }
 
