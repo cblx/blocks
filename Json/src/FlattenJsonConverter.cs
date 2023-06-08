@@ -1,12 +1,16 @@
 ﻿using System.Text.Json.Serialization;
 using System.Text.Json;
 using System.Reflection;
-using System.Reflection.Emit;
 
 namespace Cblx.Blocks;
 
 public class FlattenJsonConverter<T> : JsonConverter<T>
 {
+    private const BindingFlags PrivateAndPublicPropertiesAccessility = BindingFlags.Instance 
+        | BindingFlags.Public
+#pragma warning disable S3011 // This converter supports serialization of private properties
+        | BindingFlags.NonPublic;
+#pragma warning restore S3011 
     public override T Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         if (reader.TokenType != JsonTokenType.StartObject)
@@ -70,7 +74,7 @@ public class FlattenJsonConverter<T> : JsonConverter<T>
     {
         var properties = new Dictionary<string, (PropertyInfo Property, object Instance)>();
 
-        foreach (var property in value.GetType().GetProperties())
+        foreach (var property in value.GetType().GetProperties(PrivateAndPublicPropertiesAccessility))
         {
             if(ShouldIgnoreProperty(property))
             {
@@ -126,7 +130,7 @@ public class FlattenJsonConverter<T> : JsonConverter<T>
         )
     {
 
-        var properties = value.GetType().GetProperties();
+        var properties = value.GetType().GetProperties(PrivateAndPublicPropertiesAccessility);
 
         foreach (var property in properties)
         {
