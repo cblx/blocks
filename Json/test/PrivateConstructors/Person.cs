@@ -6,6 +6,6 @@ public class Person
 {
     private Person() { }
     public string Name { get; set; } = "Mary";
-    [Flatten]
+    [FlattenJsonProperty]
     public required Address Address { get; set; } = (Address)Activator.CreateInstance(typeof(Address), true)!;
 }

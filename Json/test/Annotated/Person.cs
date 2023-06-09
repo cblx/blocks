@@ -6,6 +6,6 @@ public class Person
 {
     [JsonPropertyName("name")]
     public required string Name { get; set; }
-    [Flatten]
+    [FlattenJsonProperty]
     public required Address Address { get; set; }
 }

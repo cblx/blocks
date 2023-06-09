@@ -3,7 +3,7 @@
 using System.Text.Json.Serialization;
 using Cols = TbClientePotencial.Cols;
 
-[FlattenRoot]
+[FlattenJsonRoot]
 public partial class ClientePotencial 
 {
     public ClientePotencial() { }

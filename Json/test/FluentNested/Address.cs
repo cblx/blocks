@@ -3,6 +3,6 @@
 public class Address
 {
     public required string Street { get; set; }
-    [Flatten<CityConfiguration>]
+    [FlattenJsonProperty<CityConfiguration>]
     public required City City { get; set; }
 }

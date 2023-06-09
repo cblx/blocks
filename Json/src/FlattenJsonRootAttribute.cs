@@ -3,9 +3,9 @@
 namespace Cblx.Blocks;
 
 [AttributeUsage(AttributeTargets.Class)]
-public class FlattenRootAttribute : JsonConverterAttribute
+public class FlattenJsonRootAttribute : JsonConverterAttribute
 {
-    public FlattenRootAttribute() : base(typeof(FlattenJsonConverterFactory))
+    public FlattenJsonRootAttribute() : base(typeof(FlattenJsonConverterFactory))
     {
     }
 
@@ -13,10 +13,10 @@ public class FlattenRootAttribute : JsonConverterAttribute
 }
 
 [AttributeUsage(AttributeTargets.Class)]
-public class FlattenRootAttribute<T> : FlattenRootAttribute
+public class FlattenJsonRootAttribute<T> : FlattenJsonRootAttribute
     where T : FlattenJsonConfiguration
 {
-    public FlattenRootAttribute()
+    public FlattenJsonRootAttribute()
     {
         ConfigurationType = typeof(T);
     }

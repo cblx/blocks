@@ -1,8 +1,8 @@
 ﻿namespace Cblx.Blocks.Json.Tests.FlattenRootAttributeUsage;
-[FlattenRoot]
+[FlattenJsonRoot]
 public class Person
 {
     public required string Name { get; set; }
-    [Flatten]
+    [FlattenJsonProperty]
     public required Address Address { get; set; }
 }

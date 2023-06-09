@@ -6,11 +6,16 @@ namespace Cblx.Blocks;
 
 public class FlattenJsonConverter<T> : JsonConverter<T>
 {
-    private const BindingFlags PrivateAndPublicPropertiesAccessility = BindingFlags.Instance 
-        | BindingFlags.Public
-#pragma warning disable S3011 // This converter supports serialization of private properties
-        | BindingFlags.NonPublic;
-#pragma warning restore S3011 
+    private readonly FlattenJsonConfiguration _rootConfiguration;
+
+    public FlattenJsonConverter()
+    {
+        var rootConfigurationType = typeof(T).GetCustomAttribute<FlattenJsonRootAttribute>()?.ConfigurationType;
+        _rootConfiguration = rootConfigurationType is null ? 
+                new FlattenJsonConfiguration(typeof(T)) : 
+                (Activator.CreateInstance(rootConfigurationType) as FlattenJsonConfiguration)!;
+    }
+
     public override T Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         if (reader.TokenType != JsonTokenType.StartObject)
@@ -25,19 +30,35 @@ public class FlattenJsonConverter<T> : JsonConverter<T>
         // e desabilita a possibilidade de setarmos o .CreateObject no JsonTypeInfo.
         // Isso deve ocorrer também com as propriedades com setters privados.
         var value = (T)Activator.CreateInstance(typeof(T), nonPublic: true)!;
-        var configurationType = typeof(T).GetCustomAttribute<FlattenRootAttribute>()?.ConfigurationType;
-        var configuration = configurationType is null ? null : Activator.CreateInstance(configurationType) as FlattenJsonConfiguration;
-        ReadProperties(ref reader, value, options, configuration);
+        ReadProperties(ref reader, value, options, _rootConfiguration);
         return value;
     }
 
     private static void ReadProperties(ref Utf8JsonReader reader,
                                        object value,
                                        JsonSerializerOptions options,
-                                       FlattenJsonConfiguration? configuration)
+                                       FlattenJsonConfiguration configuration)
     {
-        var properties = GetFlattenedProperties(value, configuration);
-
+        Dictionary<PropertyData, object> nestedInstances = new();
+        object FindOrCreateNestedInstances(PropertyData data)
+        {
+            if(data.ParentData is null)
+            {
+                return value;
+            }
+            if(nestedInstances.ContainsKey(data))
+            {
+                return nestedInstances[data];
+            }
+            var nestedInstance = data.ParentData.PropertyInfo.GetValue(FindOrCreateNestedInstances(data.ParentData))!;
+            if(nestedInstance is null)
+            {
+                nestedInstance = Activator.CreateInstance(data.ParentData.PropertyInfo.PropertyType)!;
+                data.ParentData.PropertyInfo.SetValue(FindOrCreateNestedInstances(data.ParentData), nestedInstance);
+            }
+            nestedInstances.Add(data, nestedInstance);
+            return nestedInstance;
+        }
         while (reader.Read())
         {
             if (reader.TokenType == JsonTokenType.EndObject)
@@ -50,75 +71,24 @@ public class FlattenJsonConverter<T> : JsonConverter<T>
                 var propertyName = reader.GetString()!;
                 reader.Read();
 
-                if (properties.TryGetValue(propertyName, out var propertyInfo))
-                {
-                    var propertyValue = JsonSerializer.Deserialize(ref reader, propertyInfo.Property.PropertyType, options);
-                    propertyInfo.Property.DeclaringType!
-                        .GetProperty(propertyInfo.Property.Name)!
-                        .SetValue(propertyInfo.Instance, propertyValue);
-                }
-                else
+                var data = configuration.FindDataByJsonPropertyName(propertyName);
+                if (data is null)
                 {
                     reader.TrySkip(); // Skip the property value if it doesn't match any property in the dictionary
+                    continue;
                 }
+                var propertyInfo = data.PropertyInfo;
+                var propertyValue = JsonSerializer.Deserialize(ref reader, propertyInfo.PropertyType, options);
+                var instance = FindOrCreateNestedInstances(data);
+                propertyInfo.DeclaringType!.GetProperty(propertyInfo.Name)!.SetValue(instance, propertyValue);
             }
         }
-    }
-   
-    private static bool ShouldIgnoreProperty(PropertyInfo property)
-    {
-        return property.GetCustomAttribute<JsonIgnoreAttribute>() is not null;
-    }
-
-    private static Dictionary<string, (PropertyInfo Property, object Instance)> GetFlattenedProperties(object value, FlattenJsonConfiguration? configuration = null)
-    {
-        var properties = new Dictionary<string, (PropertyInfo Property, object Instance)>();
-
-        foreach (var property in value.GetType().GetProperties(PrivateAndPublicPropertiesAccessility))
-        {
-            if(ShouldIgnoreProperty(property))
-            {
-                continue;
-            }
-            if (property.GetCustomAttribute<FlattenAttribute>() is { } flattenAttribute && property.PropertyType.IsClass)
-            {
-                var nestedType = property.PropertyType;
-                var nestedInstance = Activator.CreateInstance(nestedType, true)!;
-                property.SetValue(value, nestedInstance);
-                var propConfiguration =
-                    flattenAttribute.ConfigurationType == null ?
-                        configuration : (FlattenJsonConfiguration)Activator.CreateInstance(flattenAttribute.ConfigurationType)!;
-                var nestedProperties = GetFlattenedProperties(nestedInstance, propConfiguration);
-                foreach (var nestedProperty in nestedProperties)
-                {
-                    properties.Add(nestedProperty.Key, nestedProperty.Value);
-                }
-            }
-            else
-            {
-                var propertyName = FlattenJsonConverter<T>.GetPropertyName(property, configuration);
-                properties.Add(propertyName, (property, value));
-            }
-        }
-
-        return properties;
-    }
-
-
-    private static string GetPropertyName(PropertyInfo property, FlattenJsonConfiguration? configuration = null)
-    {
-        var jsonPropertyName = property.GetCustomAttribute<JsonPropertyNameAttribute>()?.Name;
-        var flattenPropertyName = configuration?.GetJsonPropertyName(property.Name);
-
-        return flattenPropertyName ?? jsonPropertyName ?? property.Name;
     }
 
     public override void Write(Utf8JsonWriter writer, T value, JsonSerializerOptions options)
     {
         writer.WriteStartObject();
-        var configurationType = typeof(T).GetCustomAttribute<FlattenRootAttribute>()?.ConfigurationType;
-        var configuration = configurationType is null ? null : Activator.CreateInstance(configurationType) as FlattenJsonConfiguration;
-        WriteProperties(writer, value, options, configuration);
+        WriteProperties(writer, value, options, _rootConfiguration);
         writer.WriteEndObject();
     }
 
@@ -126,47 +96,40 @@ public class FlattenJsonConverter<T> : JsonConverter<T>
         Utf8JsonWriter writer,
         object value,
         JsonSerializerOptions options,
-        FlattenJsonConfiguration? configuration = null
+        FlattenJsonConfiguration configuration
         )
     {
-
-        var properties = value.GetType().GetProperties(PrivateAndPublicPropertiesAccessility);
-
-        foreach (var property in properties)
+        var propertiesData = configuration.GetIncludedPropertiesData();
+        var nestedInstances = new Dictionary<PropertyData, object>();
+        object FindNestedInstance(PropertyData data)
         {
-            if(ShouldIgnoreProperty(property))
+            if (data.ParentData is null)
             {
-                continue;
+                return value;
             }
-            var propertyName = property.GetCustomAttribute<JsonPropertyNameAttribute>()?.Name ?? property.Name;
-            var currentFlattenAttribute = property.GetCustomAttribute<FlattenAttribute>();
-            if (currentFlattenAttribute != null && property.PropertyType.IsClass)
+            if (nestedInstances.ContainsKey(data))
             {
-                var nestedValue = property.GetValue(value);
-                if (nestedValue != null)
-                {
-                    var nestedConfigurationType = currentFlattenAttribute.ConfigurationType;
-                    var nestedConfiguration = nestedConfigurationType is null ? null : Activator.CreateInstance(nestedConfigurationType) as FlattenJsonConfiguration;
-                    WriteProperties(writer, nestedValue, options, nestedConfiguration);
-                }
+                return nestedInstances[data];
+            }
+            var nestedInstance = data.ParentData.PropertyInfo.GetValue(FindNestedInstance(data.ParentData))!;
+            nestedInstances.Add(data, nestedInstance);
+            return nestedInstance;
+        }
+
+        foreach (var data in propertiesData)
+        {
+            if (data.IsFlatten) { continue; }
+            var propertyName = configuration.GetJsonPropertyName(data.PropertyInfo);
+            var instance = FindNestedInstance(data);
+            var propertyValue = data.PropertyInfo.GetValue(instance);
+            if (propertyValue != null)
+            {
+                writer.WritePropertyName(propertyName);
+                JsonSerializer.Serialize(writer, propertyValue, options);
             }
             else
             {
-                if (configuration is not null)
-                {
-                    propertyName = configuration?.GetJsonPropertyName(propertyName) ?? propertyName;
-                }
-
-                var propertyValue = property.GetValue(value);
-                if (propertyValue != null)
-                {
-                    writer.WritePropertyName(propertyName);
-                    JsonSerializer.Serialize(writer, propertyValue, options);
-                }
-                else
-                {
-                    writer.WriteNull(propertyName);
-                }
+                writer.WriteNull(propertyName);
             }
         }
     }

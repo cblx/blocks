@@ -2,6 +2,6 @@
 
 public abstract class PersonBase
 {
-    [Flatten]
+    [FlattenJsonProperty]
     public required Address Address { get; set; }
 }

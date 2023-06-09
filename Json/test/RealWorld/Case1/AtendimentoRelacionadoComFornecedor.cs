@@ -18,7 +18,7 @@ public class AtendimentoRelacionadoComFornecedor : AtendimentoDoConsumidor
     [JsonInclude]
     public TbId? FornecedorId { get; protected set; }
 
-    [Flatten<ClassificacaoFlattenConfiguration>]
+    [FlattenJsonProperty<ClassificacaoFlattenConfiguration>]
     public Classificacao Classificacao { get; protected set; } = Classificacao.Empty();
     
     [JsonPropertyName(Cols.AtendimentoAnteriorId)]

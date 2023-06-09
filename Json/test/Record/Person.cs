@@ -1,8 +1,11 @@
-﻿namespace Cblx.Blocks.Json.Tests.FlattenRootAttributeUsageWithFluent;
-[FlattenJsonRoot<PersonConfiguration>]
+﻿using System.Text.Json.Serialization;
+
+namespace Cblx.Blocks.Json.Tests.Record;
+
 public class Person
 {
     public required string Name { get; set; }
+    public required int Age { get; set; }
     [FlattenJsonProperty]
     public required Address Address { get; set; }
 }

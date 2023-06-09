@@ -11,6 +11,6 @@ public class Person
 
     public required string Description { get; set; }
 
-    [Flatten]
+    [FlattenJsonProperty]
     public required Address Address { get; set; }
 }
