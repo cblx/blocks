@@ -4,6 +4,7 @@ public class PersonConfiguration : FlattenJsonConfiguration<Person>
 {
     public PersonConfiguration()
     {
-        IncludePrivateProperty("Address");
+        //IncludePrivateProperty("Address");
+        IncludePrivateProperty(Person.GetAddressExpression());
     }
 }
