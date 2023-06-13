@@ -45,13 +45,7 @@ public abstract class FlattenJsonConfiguration<T> : FlattenJsonConfiguration
         _ => throw new ArgumentException("Invalid expression", nameof(member))
     };
 
-    static string GetPropertyName(Expression<Func<T, object?>> member) => GetPropertyInfo(member).Name;
-}
-
-public static class PropertyInfoExtensions
-{
-    public static PropertyInfo GetOriginal(this PropertyInfo propertyInfo)
-        => propertyInfo.DeclaringType!.GetProperty(propertyInfo.Name, FlattenJsonConfiguration.PrivateAndPublicPropertiesAccessility)!;
+    //static string GetPropertyName(Expression<Func<T, object?>> member) => GetPropertyInfo(member).Name;
 }
 
 public class FlattenJsonConfiguration

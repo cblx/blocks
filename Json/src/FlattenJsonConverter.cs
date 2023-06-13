@@ -80,7 +80,7 @@ public class FlattenJsonConverter<T> : JsonConverter<T>
                 var propertyInfo = data.PropertyInfo;
                 var propertyValue = JsonSerializer.Deserialize(ref reader, propertyInfo.PropertyType, options);
                 var instance = FindOrCreateNestedInstances(data);
-                propertyInfo.DeclaringType!.GetProperty(propertyInfo.Name)!.SetValue(instance, propertyValue);
+                propertyInfo.GetOriginal()!.SetValue(instance, propertyValue);
             }
         }
     }
