@@ -72,7 +72,7 @@ public class FlattenJsonConverter<T> : JsonConverter<T>
                 reader.Read();
 
                 var data = configuration.FindDataByJsonPropertyName(propertyName);
-                if (data is null || !configuration.ShouldInclude(data.PropertyInfo))
+                if (data is null || !data.ShouldInclude())
                 {
                     reader.TrySkip(); // Skip the property value if it doesn't match any property in the dictionary
                     continue;
@@ -119,7 +119,7 @@ public class FlattenJsonConverter<T> : JsonConverter<T>
         foreach (var data in propertiesData)
         {
             if (data.IsFlatten) { continue; }
-            var propertyName = configuration.GetJsonPropertyName(data.PropertyInfo);
+            var propertyName = data.GetJsonPropertyName();
             var instance = FindNestedInstance(data);
             var propertyValue = data.PropertyInfo.GetValue(instance);
             if (propertyValue != null)

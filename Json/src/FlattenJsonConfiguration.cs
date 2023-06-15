@@ -13,28 +13,19 @@ public abstract class FlattenJsonConfiguration<T> : FlattenJsonConfiguration
 
     public FlattenJsonConfiguration<T> IncludePrivateProperty(Expression<Func<T, object?>> member)
     {
-        //GetData(GetPropertyName(member)).Attributes.Add(new FlattenJsonIncludePrivatePropertyAttribute());
-        GetData(GetPropertyInfo(member)).Attributes.Add(new FlattenJsonIncludePrivatePropertyAttribute());
+        GetOwnData(GetPropertyInfo(member)).Attributes.Add(new FlattenJsonIncludePrivatePropertyAttribute());
         return this;
     }
 
-    //public FlattenJsonConfiguration<T> IncludePrivateProperty(string propertyName)
-    //{
-    //    GetData(propertyName).Attributes.Add(new FlattenJsonIncludePrivatePropertyAttribute());
-    //    return this;
-    //}
-
     public FlattenJsonConfiguration<T> HasJsonPropertyName(Expression<Func<T, object?>> member, string jsonPropertyName)
     {
-        //GetData(GetPropertyName(member)).Attributes.Add(new JsonPropertyNameAttribute(jsonPropertyName));
-        GetData(GetPropertyInfo(member)).Attributes.Add(new JsonPropertyNameAttribute(jsonPropertyName));
+        GetOwnData(GetPropertyInfo(member)).Attributes.Add(new JsonPropertyNameAttribute(jsonPropertyName));
         return this;
     }
 
     public FlattenJsonConfiguration<T> Ignore(Expression<Func<T, object?>> member)
     {
-        //GetData(GetPropertyName(member)).Attributes.Add(new JsonIgnoreAttribute());
-        GetData(GetPropertyInfo(member)).Attributes.Add(new JsonIgnoreAttribute());
+        GetOwnData(GetPropertyInfo(member)).Attributes.Add(new JsonIgnoreAttribute());
         return this;
     }
 
@@ -58,7 +49,8 @@ public class FlattenJsonConfiguration
        | BindingFlags.NonPublic;
 #pragma warning restore S3011 
 
-    private readonly Dictionary<PropertyInfo, PropertyData> _flattenedProperties = new();
+    private readonly Dictionary<PropertyInfo, PropertyData> _ownProperties = new();
+    private readonly HashSet<PropertyData> _flattenedProperties = new();
 
     internal FlattenJsonConfiguration(Type type)
     {
@@ -73,8 +65,8 @@ public class FlattenJsonConfiguration
         foreach (var property in properties)
         {
             var propertyData = new PropertyData(property);
-            //_flattenedProperties.Add(property.Name, propertyData);
-            _flattenedProperties.Add(property.GetOriginal(), propertyData);
+            _flattenedProperties.Add(propertyData);
+            _ownProperties.Add(property.GetOriginal(), propertyData);
             propertyData.Attributes.AddRange(property.GetCustomAttributes());
 
             // If the property is class and has FlattenJsonPropertyAttribute, initialize it's configuration
@@ -85,55 +77,32 @@ public class FlattenJsonConfiguration
                 var configuration =
                     configurationType is null ? new FlattenJsonConfiguration(property.PropertyType) :
                         (Activator.CreateInstance(configurationType) as FlattenJsonConfiguration)!;
-                foreach (var (key, value) in configuration._flattenedProperties)
+                foreach (var data in configuration._flattenedProperties)
                 {
-                    value.ParentData ??= propertyData;
-                    _flattenedProperties.Add(key, value);
+                    data.ParentData ??= propertyData;
+                    //_flattenedProperties.Add(key, value);
+                    _flattenedProperties.Add(data);
                 }
             }
         }
     }
 
-    public string GetJsonPropertyName(PropertyInfo propertyInfo)
-    {
-        //return _flattenedProperties[propertyInfo.Name].Attributes.OfType<JsonPropertyNameAttribute>().LastOrDefault()?.Name
-        return _flattenedProperties[propertyInfo.GetOriginal()].Attributes.OfType<JsonPropertyNameAttribute>().LastOrDefault()?.Name
-            ?? propertyInfo.Name;
-    }
-
-    internal bool ShouldInclude(PropertyInfo propertyInfo)
-    {
-        return
-            //!_flattenedProperties[propertyInfo.Name].Attributes.OfType<JsonIgnoreAttribute>().Any()
-            !_flattenedProperties[propertyInfo.GetOriginal()].Attributes.OfType<JsonIgnoreAttribute>().Any()
-            &&
-            (
-                propertyInfo.GetMethod?.IsPublic is true
-                ||
-                //_flattenedProperties[propertyInfo.Name].Attributes.OfType<FlattenJsonIncludePrivatePropertyAttribute>().Any()
-                _flattenedProperties[propertyInfo.GetOriginal()].Attributes.OfType<FlattenJsonIncludePrivatePropertyAttribute>().Any()
-            );
-    }
-
     internal PropertyData? FindDataByJsonPropertyName(string propertyName)
     {
         return _flattenedProperties
-            .Values
-            .FirstOrDefault(x => GetJsonPropertyName(x.PropertyInfo) == propertyName);
+            //.Values
+            .FirstOrDefault(x => x.GetJsonPropertyName() == propertyName);
     }
 
-    internal PropertyData GetData(PropertyInfo propertyInfo)
+    internal PropertyData GetOwnData(PropertyInfo propertyInfo)
     {
-        return _flattenedProperties[propertyInfo.GetOriginal()];
+        return _ownProperties[propertyInfo.GetOriginal()];
     }
-
-    //internal PropertyData GetData(string propertyName)
-    //{
-    //    return _flattenedProperties[propertyName];
-    //}
 
     internal PropertyData[] GetIncludedPropertiesData()
     {
-        return _flattenedProperties.Values.Where(x => ShouldInclude(x.PropertyInfo)).ToArray();
+        return _flattenedProperties
+        //.Values
+        .Where(x => x.ShouldInclude()).ToArray();
     }
 }
