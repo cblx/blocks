@@ -12,6 +12,7 @@ internal class PropertyData
     public bool IsFlatten { get; set; }
     public PropertyInfo PropertyInfo { get; private set; }
     public PropertyData? ParentData { get; set; }
+    public Type? FluentConfigurationType { get; set; }
     public List<Attribute> Attributes { get; private set; } = new();
     public string GetJsonPropertyName()
     {

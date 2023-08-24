@@ -35,8 +35,6 @@ public abstract class FlattenJsonConfiguration<T> : FlattenJsonConfiguration
         UnaryExpression unaryExpression => ((unaryExpression.Operand as MemberExpression)?.Member as PropertyInfo)!,
         _ => throw new ArgumentException("Invalid expression", nameof(member))
     };
-
-    //static string GetPropertyName(Expression<Func<T, object?>> member) => GetPropertyInfo(member).Name;
 }
 
 public class FlattenJsonConfiguration
@@ -69,19 +67,24 @@ public class FlattenJsonConfiguration
             _ownProperties.Add(property.GetOriginal(), propertyData);
             propertyData.Attributes.AddRange(property.GetCustomAttributes());
 
-            // If the property is class and has FlattenJsonPropertyAttribute, initialize it's configuration
-            if (property.PropertyType.IsClass && property.GetCustomAttribute<FlattenJsonPropertyAttribute>() is not null)
+            if (property.PropertyType.IsClass && property.HasFluentAttribute())
             {
-                propertyData.IsFlatten = true;
-                var configurationType = property.GetCustomAttribute<FlattenJsonPropertyAttribute>()!.ConfigurationType;
-                var configuration =
-                    configurationType is null ? new FlattenJsonConfiguration(property.PropertyType) :
-                        (Activator.CreateInstance(configurationType) as FlattenJsonConfiguration)!;
-                foreach (var data in configuration._flattenedProperties)
+                propertyData.FluentConfigurationType = property.GetConfigurationType();
+                if (property.ShouldFlatten())
                 {
-                    data.ParentData ??= propertyData;
-                    //_flattenedProperties.Add(key, value);
-                    _flattenedProperties.Add(data);
+                    propertyData.IsFlatten = true;
+                    var configuration =
+                        propertyData.FluentConfigurationType is null ? new FlattenJsonConfiguration(property.PropertyType) :
+                            (Activator.CreateInstance(propertyData.FluentConfigurationType) as FlattenJsonConfiguration)!;
+                    foreach (var data in configuration._flattenedProperties)
+                    {
+                        data.ParentData ??= propertyData;
+                        _flattenedProperties.Add(data);
+                    }
+                }
+                else
+                {
+                    propertyData.IsFlatten = false;
                 }
             }
         }
@@ -90,7 +93,6 @@ public class FlattenJsonConfiguration
     internal PropertyData? FindDataByJsonPropertyName(string propertyName)
     {
         return _flattenedProperties
-            //.Values
             .FirstOrDefault(x => x.GetJsonPropertyName() == propertyName);
     }
 
@@ -102,7 +104,6 @@ public class FlattenJsonConfiguration
     internal PropertyData[] GetIncludedPropertiesData()
     {
         return _flattenedProperties
-        //.Values
         .Where(x => x.ShouldInclude()).ToArray();
     }
 }
