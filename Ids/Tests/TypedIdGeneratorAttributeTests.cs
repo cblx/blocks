@@ -32,8 +32,8 @@ public class TypedIdGeneratorAttributeTests
                                  namespace MyNamespace;
 
                                  [ExcludeFromCodeCoverage]
-                                 [TypeConverter(typeof(IdTypeConverter<MyClassId>))]
-                                 [JsonConverter(typeof(IdConverterFactory<MyClassId>))]
+                                 [TypeConverter(typeof(TypedIdJsonConverter<MyClassId>))]
+                                 [JsonConverter(typeof(TypedIdConverterFactory<MyClassId>))]
                                  public readonly partial record struct MyClassId(Guid Guid)
                                  {
                                      public MyClassId(string guidString) : this(new Guid(guidString)){}

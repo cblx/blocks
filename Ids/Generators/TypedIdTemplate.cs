@@ -17,8 +17,8 @@ internal static class TypedIdTemplate
                  namespace {{namespaceName}};
                  
                  [ExcludeFromCodeCoverage]
-                 [TypeConverter(typeof(IdTypeConverter<{{name}}>))]
-                 [JsonConverter(typeof(IdConverterFactory<{{name}}>))]
+                 [TypeConverter(typeof(TypedIdJsonConverter<{{name}}>))]
+                 [JsonConverter(typeof(TypedIdConverterFactory<{{name}}>))]
                  public readonly partial record struct {{name}}(Guid Guid)
                  {
                      public {{name}}(string guidString) : this(new Guid(guidString)){}
