@@ -3,7 +3,8 @@ using Cblx.Blocks.Ids.Generators;
 using Cblx.Blocks.SourceGenerators;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
-using VerifyCS = Cblx.Blocks.SourceGenerators.CSharpSourceGeneratorVerifier<Cblx.Blocks.Ids.Generators.TypedIdGenerator>;
+using VerifyCS =
+    Cblx.Blocks.SourceGenerators.CSharpSourceGeneratorVerifier<Cblx.Blocks.Ids.Generators.TypedIdGenerator>;
 
 namespace Cblx.Blocks.Ids.Tests;
 
@@ -22,7 +23,7 @@ public class TypedIdGeneratorAttributeTests
         const string generated = """
                                  // Auto-generated code
                                  #nullable enable
-                                 
+
                                  using System;
                                  using System.ComponentModel;
                                  using System.Diagnostics.CodeAnalysis;
@@ -32,7 +33,7 @@ public class TypedIdGeneratorAttributeTests
                                  namespace MyNamespace;
 
                                  [ExcludeFromCodeCoverage]
-                                 [TypeConverter(typeof(TypedIdJsonConverter<MyClassId>))]
+                                 [TypeConverter(typeof(TypedIdTypeConverter<MyClassId>))]
                                  [JsonConverter(typeof(TypedIdConverterFactory<MyClassId>))]
                                  public readonly partial record struct MyClassId(Guid Guid)
                                  {
@@ -48,6 +49,27 @@ public class TypedIdGeneratorAttributeTests
                                      public override string ToString() => Guid.ToString();
                                  }
                                  """;
+
+        const string helper = $$"""
+                                // Auto-generated code
+                                #nullable enable
+                                
+                                using System;
+                                using System.Diagnostics.CodeAnalysis;
+                                
+                                namespace Cblx.Blocks;
+                                
+                                [ExcludeFromCodeCoverage]
+                                public static class TypedIdHelper
+                                {
+                                    public static Type[] Types { get; } = 
+                                    {
+                                        typeof(MyNamespace.MyClassId),
+                                
+                                    }; 
+                                }
+                                """;
+
         await new VerifyCS.Test
         {
             TestState =
@@ -56,6 +78,7 @@ public class TypedIdGeneratorAttributeTests
                 GeneratedSources =
                 {
                     (typeof(TypedIdGenerator), "MyClassId.g.cs", SourceText.From(generated, Encoding.UTF8)),
+                    (typeof(TypedIdGenerator), "TypedIdHelper.g.cs", SourceText.From(helper, Encoding.UTF8)),
                 },
                 ReferenceAssemblies = Net.Net70,
                 AdditionalReferences =
