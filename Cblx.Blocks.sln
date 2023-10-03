@@ -69,6 +69,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cblx.Blocks.Json.Tests", "Json\test\Cblx.Blocks.Json.Tests.csproj", "{86E886F7-5C9F-4333-BA70-D7D7613D00DD}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Ids", "Ids", "{86FC8A8D-6688-460B-9A1F-C5A49B055C3D}"
+	ProjectSection(SolutionItems) = preProject
+		Ids\README.MD = Ids\README.MD
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cblx.Blocks.Ids", "Ids\Core\Cblx.Blocks.Ids.csproj", "{A9A5DCB2-5ED4-491C-A4A1-CFEDA7BF66CD}"
 EndProject
