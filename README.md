@@ -3,7 +3,7 @@ Libs auxiliares e/ou experimentais
 
 ## [HandlerBase](https://github.com/cblx/blocks/tree/main/HandlerBase) [![Nuget](https://img.shields.io/nuget/v/Cblx.Blocks.HandlerBase)](https://www.nuget.org/packages/Cblx.Blocks.HandlerBase)
 
-Classe base, Conventions e Source Generators para facilitar a aplicação de um design de código onde temos 1 Controller para cada 1 Handler de Caso de Uso da Aplicação. 
+Classe base, Conventions e Source Generators para facilitar a aplicação de um design de código onde temos 1 Controller para cada 1 Handler de Caso de Uso da Aplicação.
 
 ## [SourceGenerators](https://github.com/cblx/blocks/tree/main/SourceGenerators)
 
@@ -14,6 +14,10 @@ Gerador de AssemblyMarker por projeto e Gerador de método de extensão para reg
 ### [EmptyConstructor](https://github.com/cblx/blocks/tree/main/SourceGenerators/EmptyConstructor) [![Nuget](https://img.shields.io/nuget/v/Cblx.Blocks.SourceGenerators.EmptyConstructor)](https://www.nuget.org/packages/Cblx.Blocks.SourceGenerators.EmptyConstructor)
 
 Gerador de Construtores vazios para classes anotadas com os atributos.
+
+### [GenerateTypedId](https://github.com/cblx/blocks/tree/main/Ids) [![Nuget](https://img.shields.io/nuget/v/Cblx.Blocks.Ids)](https://www.nuget.org/packages/Cblx.Blocks.Ids)
+
+Gerador de Ids tipados, com suporte a conversão de string para o tipo de Id.
 
 ## [Testing](https://github.com/cblx/blocks/tree/main/Testing)
 
