@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<root>
+    <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="CBLX0001Description" xml:space="preserve">
+        <value>All classes inheriting from EndpointBase should implement an internal static method named ExecuteAsync.</value><comment>An optional longer localizable description of the diagnostic.</comment>
+    </data>
+    <data name="CBLX0001MessageFormat" xml:space="preserve">
+        <value>Class '{0}' should contain an internal static method named 'ExecuteAsync'.</value><comment>The format-able message the diagnostic displays.</comment>
+    </data>
+    <data name="CBLX0001Title" xml:space="preserve">
+        <value>Endpoint should contain ExecuteAsync method</value><comment>The title of the diagnostic.</comment>
+    </data>
+    <data name="CBLX0001CodeFixTitle" xml:space="preserve">
+        <value>Replace '{0}' with '{1}'</value><comment>The title of the code fix.</comment>
+    </data>
+    <data name="CBLX0002Description" xml:space="preserve">
+        <value>All classes inheriting from EndpointBase should implement an internal static method named ExecuteAsync.</value><comment>An optional longer localizable description of the diagnostic.</comment>
+    </data>
+    <data name="CBLX0002MessageFormat" xml:space="preserve">
+        <value>Method '{0}' should be static.</value><comment>The format-able message the diagnostic displays.</comment>
+    </data>
+    <data name="CBLX0002Title" xml:space="preserve">
+        <value>ExecuteAsync method should be static</value><comment>The title of the diagnostic.</comment>
+    </data>
+    <data name="CBLX0003Title" xml:space="preserve">
+        <value>ExecuteAsync method should be internal</value>
+    </data>
+    <data name="CBLX0003MessageFormat" xml:space="preserve">
+        <value>Method '{0}' should be internal.</value>
+    </data>
+    <data name="CBLX0003Description" xml:space="preserve">
+        <value>All classes inheriting from EndpointBase should implement an internal static method named ExecuteAsync.</value>
+    </data>
+    <data name="CBLX0002CodeFixTitle" xml:space="preserve">
+        <value>Change to static method</value>
+    </data>
+    <data name="CBLX0003CodeFixTitle" xml:space="preserve">
+        <value>Change to internal method</value>
+    </data>
+</root>
