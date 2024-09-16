@@ -5,6 +5,10 @@ Libs auxiliares e/ou experimentais
 
 Classe base, Conventions e Source Generators para facilitar a aplicação de um design de código onde temos 1 Controller para cada 1 Handler de Caso de Uso da Aplicação.
 
+## [Analyzers](https://github.com/cblx/blocks/tree/main/Analyzers)
+
+### [Endpoints](https://github.com/cblx/blocks/tree/main/Analyzers/Endpoints) [![Nuget](https://img.shields.io/nuget/v/Cblx.Blocks.Analyzers.Endpoints)](https://www.nuget.org/packages/Cblx.Blocks.Analyzers.Endpoints)
+
 ## [SourceGenerators](https://github.com/cblx/blocks/tree/main/SourceGenerators)
 
 ### [DependencyInjection](https://github.com/cblx/blocks/tree/main/SourceGenerators/DependencyInjection) [![Nuget](https://img.shields.io/nuget/v/Cblx.Blocks.SourceGenerators.DependencyInjection)](https://www.nuget.org/packages/Cblx.Blocks.SourceGenerators.DependencyInjection)
