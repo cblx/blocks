@@ -15,4 +15,4 @@ public class HasObsoleteEmptyConstructorAttributeTests
     }
 }
 [HasObsoleteEmptyConstructor]
-public partial class ClasseComContrutorVazio { }
+internal partial class ClasseComContrutorVazio { }
