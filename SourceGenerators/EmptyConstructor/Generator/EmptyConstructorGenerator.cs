@@ -35,7 +35,7 @@ public class EmptyConstructorGenerator : ISourceGenerator
                 using System.Diagnostics.CodeAnalysis;
                         
                 namespace {{symbol.ContainingNamespace}};
-                public partial class {{symbol.Name}}
+                partial class {{symbol.Name}}
                 {
                 #pragma warning disable CS8618
                     [ExcludeFromCodeCoverage{{obsoletAttribute}}]
