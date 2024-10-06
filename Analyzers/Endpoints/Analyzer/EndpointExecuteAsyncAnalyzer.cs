@@ -33,6 +33,8 @@ public class EndpointExecuteAsyncAnalyzer : DiagnosticAnalyzer
 
     private void AnalyzeNode(SyntaxNodeAnalysisContext context)
     {
+        var options = CreateOptions(context.Options.AnalyzerConfigOptionsProvider.GetOptions(context.Node.SyntaxTree));
+        
         if (context.Node is not ClassDeclarationSyntax classDeclaration) return;
         
         var semanticModel = context.SemanticModel;
@@ -42,13 +44,31 @@ public class EndpointExecuteAsyncAnalyzer : DiagnosticAnalyzer
         if(classSymbol is null || classSymbol.IsAbstract || classSymbol.Name is EndpointBase || !InheritsFromEndpointBase(classSymbol.BaseType)) return;
         
         var executeAsyncMethod = classSymbol.GetMembers().OfType<IMethodSymbol>().FirstOrDefault(m => m.Name == MethodName);
-        
+
         switch (executeAsyncMethod)
         {
-            case null: context.ReportDiagnostic(CreateDiagnostic(classDeclaration, DiagnosticDescriptors.EndpointShouldContainExecuteAsyncMethod)); break;
-            case { IsStatic: false } : context.ReportDiagnostic(CreateDiagnostic(executeAsyncMethod, DiagnosticDescriptors.ExecuteAsyncMethodShouldBeStatic)); break;
-            case { DeclaredAccessibility: not Accessibility.Internal }: context.ReportDiagnostic(CreateDiagnostic(executeAsyncMethod, DiagnosticDescriptors.ExecuteAsyncMethodShouldBeInternal)); break;
+            case null:
+                context.ReportDiagnostic(CreateDiagnostic(classDeclaration, DiagnosticDescriptors.EndpointShouldContainExecuteAsyncMethod));
+                break;
+            case { IsStatic: false }:
+                context.ReportDiagnostic(CreateDiagnostic(executeAsyncMethod, DiagnosticDescriptors.ExecuteAsyncMethodShouldBeStatic));
+                break;
+            case { DeclaredAccessibility: not Accessibility.Internal } when options.UseDeclaredAccessibilityAnalyzer: 
+                context.ReportDiagnostic(CreateDiagnostic(executeAsyncMethod, DiagnosticDescriptors.ExecuteAsyncMethodShouldBeInternal));
+                break;
         }
+    }
+
+    private static EndpointExecuteAsyncOptions CreateOptions(AnalyzerConfigOptions options)
+    {
+        var endpointOptions = new EndpointExecuteAsyncOptions ();
+        
+        if (options.TryGetValue(EndpointExecuteAsyncOptions.DeclaredAccessibilityAnalyzerName, out var value))
+        {
+            endpointOptions.UseDeclaredAccessibilityAnalyzer = string.IsNullOrEmpty(value) || bool.Parse(value);
+        }
+        
+        return endpointOptions;
     }
 
     private static Diagnostic CreateDiagnostic(IMethodSymbol methodSymbol, DiagnosticDescriptor descriptor)

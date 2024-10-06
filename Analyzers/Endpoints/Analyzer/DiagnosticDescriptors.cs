@@ -21,7 +21,7 @@ public static class DiagnosticDescriptors
     
     public static readonly DiagnosticDescriptor ExecuteAsyncMethodShouldBeStatic = new(
         id: DiagnosticExecuteAsyncMethodShouldBeStaticId,
-        title: CreateLocalizableString(nameof(Resources.CBLX0002Title)), // "ExecuteAsync method should be static"
+        title: CreateLocalizableString(nameof(Resources.CBLX0002Title)),
         messageFormat: CreateLocalizableString(nameof(Resources.CBLX0002MessageFormat)),
         category: CategoryDesign,
         description: CreateLocalizableString(nameof(Resources.CBLX0002Description)),
