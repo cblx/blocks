@@ -17,6 +17,7 @@ public class EmptyConstructorGenerator : ISourceGenerator
         {
             SemanticModel model = context.Compilation.GetSemanticModel(classDeclarationSyntax.SyntaxTree);
             if (model.GetDeclaredSymbol(classDeclarationSyntax) is not ITypeSymbol symbol) { continue; }
+            
 
             var attr = symbol.GetAttributes()
                 .Where(a => new string[] {
@@ -29,9 +30,29 @@ public class EmptyConstructorGenerator : ISourceGenerator
             bool isPrivate = attr.AttributeClass.Name is nameof(HasPrivateEmptyConstructorAttribute);
             string accessor = isPrivate ? "private" : "public";
             string obsoletAttribute = isPrivate ? "" : ", Obsolete(\"This constructor is reserved for deserialization only. Do not use it.\")";
-#pragma warning disable S2479 // Whitespace and control characters in string literals should be explicit
-
-            string source = $$"""
+            var hasPrimaryConstructor = classDeclarationSyntax.ParameterList is not null;
+            string source;
+            if (hasPrimaryConstructor)
+            {
+                var defaults = string.Join(", ", classDeclarationSyntax.ParameterList
+                                                     .Parameters
+                                                     .Select(p => "default!"));
+                source = $$"""
+                using System.Diagnostics.CodeAnalysis;
+                        
+                namespace {{symbol.ContainingNamespace}};
+                partial class {{symbol.Name}}
+                {
+                #pragma warning disable CS8618
+                    [ExcludeFromCodeCoverage{{obsoletAttribute}}]
+                    {{accessor}} {{symbol.Name}}() : this({{defaults}}) {}
+                #pragma warning restore CS8618
+                }
+                """;
+            }
+            else
+            {
+                source = $$"""
                 using System.Diagnostics.CodeAnalysis;
                         
                 namespace {{symbol.ContainingNamespace}};
@@ -43,7 +64,7 @@ public class EmptyConstructorGenerator : ISourceGenerator
                 #pragma warning restore CS8618
                 }
                 """;
-#pragma warning restore S2479 // Whitespace and control characters in string literals should be explicit
+            }
             context.AddSource($"{symbol.Name}.g.cs", source);
         }
     }
