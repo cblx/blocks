@@ -3,6 +3,7 @@
 		<TargetFramework>netstandard2.0</TargetFramework>
 		<RootNamespace>Cblx.Blocks</RootNamespace>
 		<LangVersion>preview</LangVersion>
+		<IsTrimmable Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net6.0'))">true</IsTrimmable>
 	</PropertyGroup>
 
 </Project>

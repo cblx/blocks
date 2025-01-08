@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
@@ -13,7 +13,7 @@
 
         <RootNamespace>Cblx.Blocks.Analyzers.Endpoints</RootNamespace>
         <AssemblyName>Cblx.Blocks.Analyzers.Endpoints</AssemblyName>
-
+		<IsTrimmable Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net6.0'))">true</IsTrimmable>
     </PropertyGroup>
 
     <ItemGroup>
