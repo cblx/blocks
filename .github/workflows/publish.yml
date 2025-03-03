@@ -6,5 +6,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            8
+            9
       - run: dotnet pack -p:PackageVersion=${GITHUB_REF##*/} --output ${{github.workspace}} -c Release
       - run: dotnet nuget push '*.nupkg' --api-key ${{secrets.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json
