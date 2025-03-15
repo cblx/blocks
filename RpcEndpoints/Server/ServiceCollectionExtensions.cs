@@ -7,7 +7,7 @@ public static class ServiceCollectionExtensions
     {
         services.AddMemoryCache();
         services.AddOutputCache();
-        services.AddSingleton<IEndpointService, ServerEndpointService>();
+        services.AddScoped<IEndpointService, ServerEndpointService>();
         return services;
     }
 }
