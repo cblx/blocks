@@ -29,6 +29,6 @@
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
 	</ItemGroup>
 	<ItemGroup>
-	  <ProjectReference Include="..\Abstractions\Cblx.RpcEndpoints.csproj" />
+	  <ProjectReference Include="..\Abstractions\Cblx.Blocks.RpcEndpoints.csproj" />
 	</ItemGroup>
 </Project>
