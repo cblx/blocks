@@ -1,4 +1,4 @@
-﻿namespace Cblx.RpcEndpoints;
+﻿namespace Cblx.Blocks.RpcEndpoints;
 
 internal class ValidationFilter<TRequest>(IValidator<TRequest> validator) : IEndpointFilter
 {

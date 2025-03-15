@@ -1,4 +1,4 @@
-﻿namespace Cblx.RpcEndpoints;
+﻿namespace Cblx.Blocks.RpcEndpoints;
 
 // Caso precisemos suportar algo de upload, acho que vale olhar com cuidado isso:
 // https://learn.microsoft.com/en-us/aspnet/core/release-notes/aspnetcore-7.0?source=recommendations&view=aspnetcore-7.0#file-uploads-using-iformfile-and-iformfilecollection

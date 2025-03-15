@@ -2,7 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
-namespace Cblx.RpcEndpoints;
+namespace Cblx.Blocks.RpcEndpoints;
 #pragma warning disable CS0067 // Events are not supported in the server version
 internal class ServerEndpointService(IServiceProvider serviceProvider) : IEndpointService
 {

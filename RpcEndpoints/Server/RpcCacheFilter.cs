@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Cblx.RpcEndpoints;
+namespace Cblx.Blocks.RpcEndpoints;
 
 public class RpcCacheFilter<TRequest>(RpcEndpoint<TRequest> rpcEndpoint) : IEndpointFilter
 {

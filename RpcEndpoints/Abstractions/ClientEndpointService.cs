@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 using System.Net.Http.Json;
 
-namespace Cblx.RpcEndpoints;
+namespace Cblx.Blocks.RpcEndpoints;
 
 internal class ClientEndpointService(HttpClient client, IMemoryCache memoryCache) : IEndpointService
 {
