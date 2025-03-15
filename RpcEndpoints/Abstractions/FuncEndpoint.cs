@@ -1,4 +1,4 @@
-﻿namespace Cblx.RpcEndpoints;
+﻿namespace Cblx.Blocks.RpcEndpoints;
 
 public abstract class FuncEndpoint<TResponse>(
     JsonTypeInfo<TResponse> responseTypeInfo,

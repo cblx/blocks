@@ -1,4 +1,4 @@
-﻿namespace Cblx.RpcEndpoints;
+﻿namespace Cblx.Blocks.RpcEndpoints;
 
 public class RequestSucceededEventArgs(object endpoint, object? request, object? response) : EventArgs
 {

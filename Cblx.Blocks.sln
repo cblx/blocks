@@ -103,9 +103,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cblx.Blocks.SourceGenerator
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RpcEndpoints", "RpcEndpoints", "{759623EF-B403-469D-9424-64E2077EF782}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cblx.RpcEndpoints", "RpcEndpoints\Abstractions\Cblx.RpcEndpoints.csproj", "{3F48B803-F103-4906-A0A6-CADC32E45884}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cblx.Blocks.RpcEndpoints", "RpcEndpoints\Abstractions\Cblx.Blocks.RpcEndpoints.csproj", "{3F48B803-F103-4906-A0A6-CADC32E45884}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cblx.RpcEndpoints.Server", "RpcEndpoints\Server\Cblx.RpcEndpoints.Server.csproj", "{C2AF519D-EF2E-42FD-9074-27DE8B01334E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cblx.Blocks.RpcEndpoints.Server", "RpcEndpoints\Server\Cblx.Blocks.RpcEndpoints.Server.csproj", "{C2AF519D-EF2E-42FD-9074-27DE8B01334E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

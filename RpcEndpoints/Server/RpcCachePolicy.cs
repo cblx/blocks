@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.Extensions.Primitives;
 
-namespace Cblx.RpcEndpoints;
+namespace Cblx.Blocks.RpcEndpoints;
 
 /// <summary>
 /// Policy abaixo serve para termos Cache nos endpoints

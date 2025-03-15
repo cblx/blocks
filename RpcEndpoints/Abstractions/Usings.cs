@@ -3,4 +3,4 @@ global using Microsoft.Extensions.DependencyInjection;
 global using System.Text.Json.Serialization.Metadata;
 global using System.Text.Json;
 using System.Runtime.CompilerServices;
-[assembly: InternalsVisibleTo("Cblx.RpcEndpoints.Server")]
+[assembly: InternalsVisibleTo("Cblx.Blocks.RpcEndpoints.Server")]

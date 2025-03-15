@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Cblx.RpcEndpoints;
+namespace Cblx.Blocks.RpcEndpoints;
 
 public static class MapEndpointExtensions
 {

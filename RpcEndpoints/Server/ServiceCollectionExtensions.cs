@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace Cblx.RpcEndpoints;
+namespace Cblx.Blocks.RpcEndpoints;
 public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddRpcEndpointsClientServices(this IServiceCollection services)

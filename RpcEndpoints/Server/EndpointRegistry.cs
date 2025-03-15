@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Routing;
 using System.Text;
 
-namespace Cblx.RpcEndpoints;
+namespace Cblx.Blocks.RpcEndpoints;
 
 public class EndpointRegistry(IEndpointRouteBuilder endpoints) : IEndpointRegistry
 {

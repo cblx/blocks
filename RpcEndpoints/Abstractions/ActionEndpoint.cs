@@ -1,4 +1,4 @@
-﻿namespace Cblx.RpcEndpoints;
+﻿namespace Cblx.Blocks.RpcEndpoints;
 
 public abstract class ActionEndpoint(bool allowAnonymous = false) : RpcEndpoint<object>(null,
                                                                                         null,

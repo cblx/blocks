@@ -5,7 +5,7 @@
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
-		<RootNamespace>Cblx.RpcEndpoints</RootNamespace>
+		<RootNamespace>Cblx.Blocks.RpcEndpoints</RootNamespace>
 	</PropertyGroup>
 	<PropertyGroup>
 		<!-- Optional: Publish the repository URL in the built .nupkg (in the NuSpec <Repository> element) -->
@@ -29,6 +29,6 @@
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
 	</ItemGroup>
 	<ItemGroup>
-	  <ProjectReference Include="..\Abstractions\Cblx.RpcEndpoints.csproj" />
+	  <ProjectReference Include="..\Abstractions\Cblx.Blocks.RpcEndpoints.csproj" />
 	</ItemGroup>
 </Project>

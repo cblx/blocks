@@ -1,5 +1,4 @@
-﻿
-namespace Cblx.RpcEndpoints;
+﻿namespace Cblx.Blocks.RpcEndpoints;
 
 internal static class ValidationFilterExtensions
 {
