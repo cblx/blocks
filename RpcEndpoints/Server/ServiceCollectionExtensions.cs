@@ -3,7 +3,7 @@
 namespace Cblx.Blocks.RpcEndpoints;
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddRpcEndpointsClientServices(this IServiceCollection services)
+    public static IServiceCollection AddRpcEndpointsServerServices(this IServiceCollection services)
     {
         services.AddMemoryCache();
         services.AddOutputCache();
