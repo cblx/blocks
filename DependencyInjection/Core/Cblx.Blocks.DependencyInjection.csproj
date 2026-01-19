@@ -6,6 +6,8 @@
     <Nullable>enable</Nullable>
 	<RootNamespace>Cblx.Blocks</RootNamespace>
 	<LangVersion>11.0</LangVersion>
+	<!-- Descontinuado -->
+	<IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>
