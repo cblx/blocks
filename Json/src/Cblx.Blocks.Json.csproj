@@ -6,6 +6,8 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<RootNamespace>Cblx.Blocks</RootNamespace>
+		<!-- Descontinuado -->
+		<IsPackable>false</IsPackable>
 	</PropertyGroup>
 	<PropertyGroup>
 		<!-- Optional: Publish the repository URL in the built .nupkg (in the NuSpec <Repository> element) -->

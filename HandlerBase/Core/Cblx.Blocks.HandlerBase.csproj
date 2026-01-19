@@ -2,6 +2,8 @@
 
     <PropertyGroup>
         <TargetFramework>net7.0</TargetFramework>
+		<!-- Descontinuado -->
+		<IsPackable>false</IsPackable>
     </PropertyGroup>
 
     <PropertyGroup>
