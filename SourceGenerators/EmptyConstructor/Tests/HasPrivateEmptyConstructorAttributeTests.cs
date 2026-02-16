@@ -115,4 +115,6 @@ public class HasPrivateEmptyConstructorAttributeTests
 public partial class MyClass { }
 
 [HasPrivateEmptyConstructor]
+#pragma warning disable CS9113 // O parâmetro não está lido.
 public partial class MyClassPrimary(string a, int b, DateTime c) { }
+#pragma warning restore CS9113 // O parâmetro não está lido.

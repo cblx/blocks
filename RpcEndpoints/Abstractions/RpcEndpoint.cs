@@ -1,5 +1,7 @@
 ﻿namespace Cblx.Blocks.RpcEndpoints;
 
+public abstract class RpcEndpoint { }
+
 // Caso precisemos suportar algo de upload, acho que vale olhar com cuidado isso:
 // https://learn.microsoft.com/en-us/aspnet/core/release-notes/aspnetcore-7.0?source=recommendations&view=aspnetcore-7.0#file-uploads-using-iformfile-and-iformfilecollection
 public abstract class RpcEndpoint<TRequest>(
@@ -7,7 +9,7 @@ public abstract class RpcEndpoint<TRequest>(
     JsonTypeInfo? responseJsonTypeInfo,
     IValidator<TRequest>? validator = null,
     bool allowAnonymous = false,
-    TimeSpan? cache = null)
+    TimeSpan? cache = null): RpcEndpoint
 {
     public bool AllowAnonymous { get; } = allowAnonymous;
     public TimeSpan? Cache { get; } = cache;
@@ -18,10 +20,12 @@ public abstract class RpcEndpoint<TRequest>(
     public IValidator<TRequest>? Validator { get; } = validator;
     public string Path => $"rpc/{GetType().FullName!.Replace(".", "/")}";
 
-    // No futuro, quando tivermos condicionais de compilação, seria possível condicionar a não ser WASM.
-    protected abstract Delegate Delegate { get; }
+    [Obsolete("Referenciar o método de execução diretamento no registry.Register(...)")]
+    protected virtual Delegate Delegate { get; } = null!;
+
     protected virtual Func<IServiceProvider, string>? VaryServerCacheBy { get; }
 
+    [Obsolete("Será removido.")]
     internal Delegate GetDelegate() => Delegate;
     internal bool VariesServerCache => VaryServerCacheBy is not null;
     internal string GetServerCacheKey(IServiceProvider serviceProvider, TRequest? request)

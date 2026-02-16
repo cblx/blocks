@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
+using System.Text.Json;
 
 namespace Cblx.Blocks.RpcEndpoints;
 #pragma warning disable CS0067 // Events are not supported in the server version
@@ -24,8 +25,9 @@ internal class ServerEndpointService(IServiceProvider serviceProvider) : IEndpoi
     private async Task SendRequestVoidAsync<TRequest>(RpcEndpoint<TRequest> endpoint, TRequest? request)
     {
         using var scope = serviceProvider.CreateScope();
-        var servicesAndOrRequest = ExtractServicesAndOrRequest(endpoint.GetDelegate().Method, scope.ServiceProvider, typeof(TRequest), request);
-        var task = endpoint.GetDelegate().DynamicInvoke(servicesAndOrRequest) as Task ?? throw new InvalidOperationException($"The endpoint '{endpoint.GetType().Name}' delegate should return a Task");
+        var registryItem = EndpointRegistry.Items[endpoint.Path];
+        var servicesAndOrRequest = ExtractServicesAndOrRequest(registryItem.Delegate.Method, scope.ServiceProvider, typeof(TRequest), request);
+        var task = registryItem.Delegate.DynamicInvoke(servicesAndOrRequest) as Task ?? throw new InvalidOperationException($"The endpoint '{endpoint.GetType().Name}' delegate should return a Task");
         await task;
     }
 
@@ -43,8 +45,9 @@ internal class ServerEndpointService(IServiceProvider serviceProvider) : IEndpoi
                 return (TResponse)cachedResponse!;
             }
         }
-        var servicesAndOrRequest = ExtractServicesAndOrRequest(endpoint.GetDelegate().Method, scopedProvider, typeof(TRequest), request);
-        var task = endpoint.GetDelegate().DynamicInvoke(servicesAndOrRequest) as Task<TResponse> ?? throw new InvalidOperationException($"The endpoint '{endpoint.GetType().Name}' delegate should return a Task<{typeof(TResponse).Name}>");
+        var registryItem = EndpointRegistry.Items[endpoint.Path];
+        var servicesAndOrRequest = ExtractServicesAndOrRequest(registryItem.Delegate.Method, scopedProvider, typeof(TRequest), request);
+        var task = registryItem.Delegate.DynamicInvoke(servicesAndOrRequest) as Task<TResponse> ?? throw new InvalidOperationException($"The endpoint '{endpoint.GetType().Name}' delegate should return a Task<{typeof(TResponse).Name}>");
         var response = await task;
         if (cacheable)
         {
