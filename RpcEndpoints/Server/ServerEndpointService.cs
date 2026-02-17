@@ -14,7 +14,7 @@ internal class ServerEndpointService(IServiceProvider serviceProvider) : IEndpoi
 {
     public event EventHandler<RequestSucceededEventArgs>? RequestSucceeded; // Does not matter in the server version
 
-    private static  readonly MethodInfo s_sendRequestVoidAsyncMethodInfo = typeof(ServerEndpointService).GetMethod(nameof(SendRequestVoidAsync), BindingFlags.NonPublic | BindingFlags.Instance)!;
+    private static readonly MethodInfo s_sendRequestVoidAsyncMethodInfo = typeof(ServerEndpointService).GetMethod(nameof(SendRequestVoidAsync), BindingFlags.NonPublic | BindingFlags.Instance)!;
     private static readonly MethodInfo s_sendRequestAsyncMethodInfo = typeof(ServerEndpointService).GetMethod(nameof(SendRequestAsync), BindingFlags.NonPublic | BindingFlags.Instance)!;
 
     public async Task RequestAsync(ActionEndpoint actionEndpoint) => await SendRequestVoidAsync(actionEndpoint, null);
@@ -38,9 +38,12 @@ internal class ServerEndpointService(IServiceProvider serviceProvider) : IEndpoi
         if (endpoint.GetType() != registryItem.Endpoint.GetType())
         {
             var serverEndpoint = registryItem.Endpoint;
-            var json = JsonSerializer.Serialize(request, endpoint.RequestJsonTypeInfo!);
-            var serverRequest = JsonSerializer.Deserialize(json, registryItem.RequestJsonTypeInfo!);
-            //await SendRequestVoidAsync((dynamic)serverEndpoint, (dynamic?)serverRequest);
+            object? serverRequest = null;
+            if (request != null)
+            {
+                var json = JsonSerializer.Serialize(request, endpoint.RequestJsonTypeInfo!);
+                serverRequest = JsonSerializer.Deserialize(json, registryItem.RequestJsonTypeInfo!);
+            }
             var method = s_sendRequestVoidAsyncMethodInfo.MakeGenericMethod(registryItem.RequestJsonTypeInfo?.Type ?? typeof(object));
             var proxyTask = method.Invoke(this, [serverEndpoint, serverRequest]) as Task ?? throw new InvalidOperationException($"The endpoint '{endpoint.GetType().Name}' delegate should return a Task");
             await proxyTask;
@@ -57,22 +60,24 @@ internal class ServerEndpointService(IServiceProvider serviceProvider) : IEndpoi
         var registryItem = EndpointRegistry.Items[endpoint.Path];
         // File as Link no Client. Os Endpoints terão o mesmo Fullname, mas serão tipos diferentes.
         // Fazemos então um "Proxy" da chamada
-        if(endpoint.GetType() != registryItem.Endpoint.GetType())
+        if (endpoint.GetType() != registryItem.Endpoint.GetType())
         {
             var serverEndpoint = registryItem.Endpoint;
-            var json = JsonSerializer.Serialize(request, endpoint.RequestJsonTypeInfo!);
-            var serverRequest = JsonSerializer.Deserialize(json, registryItem.RequestJsonTypeInfo!);
-            //var serverResponse = await SendRequestAsync((dynamic)serverEndpoint, (dynamic?)serverRequest);
-            var method = s_sendRequestAsyncMethodInfo.MakeGenericMethod(registryItem.RequestJsonTypeInfo?.Type ?? typeof(object), 
+            object? serverRequest = null;
+            if (request != null)
+            {
+                var json = JsonSerializer.Serialize(request, endpoint.RequestJsonTypeInfo!);
+                serverRequest = JsonSerializer.Deserialize(json, registryItem.RequestJsonTypeInfo!);
+            }
+            var method = s_sendRequestAsyncMethodInfo.MakeGenericMethod(registryItem.RequestJsonTypeInfo?.Type ?? typeof(object),
                                                                         registryItem.ResponseJsonTypeInfo!.Type);
             var proxyTask = method.Invoke(this, [serverEndpoint, serverRequest]) as Task ?? throw new InvalidOperationException($"The endpoint '{endpoint.GetType().Name}' delegate should return a Task");
-            //var serverResponse = await proxyTask.GetType().GetProperty("Result")!.GetValue(proxyTask);
             await proxyTask;
             var serverResponse = proxyTask.GetType().GetProperty("Result")!.GetValue(proxyTask);
-            return (TResponse)JsonSerializer.Deserialize(JsonSerializer.Serialize(serverResponse, registryItem.ResponseJsonTypeInfo!), 
+            return (TResponse)JsonSerializer.Deserialize(JsonSerializer.Serialize(serverResponse, registryItem.ResponseJsonTypeInfo!),
                                                endpoint.ResponseJsonTypeInfo!)!;
         }
-        
+
         using var scope = serviceProvider.CreateScope();
         var scopedProvider = scope.ServiceProvider;
         IMemoryCache? memoryCache = scopedProvider.GetService<IMemoryCache>();
