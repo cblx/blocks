@@ -22,7 +22,7 @@ public abstract class RpcEndpoint<TRequest>(
     public IValidator<TRequest>? Validator { get; } = validator;
     public string Path => $"rpc/{GetType().FullName!.Replace(".", "/")}";
 
-    [Obsolete("Referenciar o método de execução diretamento no registry.Register(...)")]
+    // Aguardando mais um tempo para o obsolete [Obsolete("Referenciar o método de execução diretamento no registry.Register(...)")]
     protected virtual Delegate Delegate { get; } = null!;
 
     protected virtual Func<IServiceProvider, string>? VaryServerCacheBy { get; }
