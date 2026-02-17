@@ -27,6 +27,8 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\Server\Cblx.Blocks.RpcEndpoints.Server.csproj" />
+	  <ProjectReference Include="..\TestsAuxClient\Cblx.Blocks.RpcEndpoints.TestsAuxClient.csproj" Aliases="Client" />
+	  <ProjectReference Include="..\TestsAuxServer\Cblx.Blocks.RpcEndpoints.TestsAuxServer.csproj" Aliases="Server" />
 	</ItemGroup>
 
 </Project>

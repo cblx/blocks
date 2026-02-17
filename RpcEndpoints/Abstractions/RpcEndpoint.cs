@@ -1,6 +1,8 @@
 ﻿namespace Cblx.Blocks.RpcEndpoints;
 
-public abstract class RpcEndpoint { }
+public abstract class RpcEndpoint(JsonTypeInfo? requestJsonTypeInfo){
+    internal JsonTypeInfo? InternalRequestJsonTypeInfo { get; } = requestJsonTypeInfo;
+}
 
 // Caso precisemos suportar algo de upload, acho que vale olhar com cuidado isso:
 // https://learn.microsoft.com/en-us/aspnet/core/release-notes/aspnetcore-7.0?source=recommendations&view=aspnetcore-7.0#file-uploads-using-iformfile-and-iformfilecollection
@@ -9,7 +11,7 @@ public abstract class RpcEndpoint<TRequest>(
     JsonTypeInfo? responseJsonTypeInfo,
     IValidator<TRequest>? validator = null,
     bool allowAnonymous = false,
-    TimeSpan? cache = null): RpcEndpoint
+    TimeSpan? cache = null): RpcEndpoint(requestJsonTypeInfo)
 {
     public bool AllowAnonymous { get; } = allowAnonymous;
     public TimeSpan? Cache { get; } = cache;

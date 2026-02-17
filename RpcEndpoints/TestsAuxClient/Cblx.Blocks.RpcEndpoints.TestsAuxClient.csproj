@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<IsPackable>false</IsPackable>
+		<DefineConstants>$(DefineConstants);CLIENT</DefineConstants>
+	</PropertyGroup>
+	<ItemGroup>
+		<Compile Include="..\TestsAuxServer\*Endpoints\**\*.cs" Link="LinkedFiles\%(RecursiveDir)%(Filename)%(Extension)" />
+	</ItemGroup>
+	<ItemGroup>
+	  <ProjectReference Include="..\Abstractions\Cblx.Blocks.RpcEndpoints.csproj" />
+	</ItemGroup>
+</Project>

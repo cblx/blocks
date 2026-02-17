@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Routing;
-using System.Linq.Expressions;
+using System.Reflection;
 using System.Text;
 
 namespace Cblx.Blocks.RpcEndpoints;
@@ -8,12 +8,20 @@ public class EndpointRegistry(IEndpointRouteBuilder endpoints) : IEndpointRegist
 {
     internal static Dictionary<string, EndpointRegistryItem> Items { get; } = [];
 
+    static readonly MethodInfo s_registerMethodInfo = typeof(EndpointRegistry).GetMethods()
+                                                .Where(m => m.Name == nameof(Register) && m.GetParameters().Length == 2)
+                                                .First(m => m.GetParameters()[0].ParameterType.IsGenericType &&
+                                                            m.GetParameters()[0].ParameterType.GetGenericTypeDefinition() == typeof(RpcEndpoint<>));
+
     [Obsolete]
     public IEndpointRegistry Register<TRequest>(RpcEndpoint<TRequest> rpcEndpoint)
     {
         Items[rpcEndpoint.Path] = new() 
         {
-            Delegate = rpcEndpoint.GetDelegate()
+            Endpoint = rpcEndpoint,
+            Delegate = rpcEndpoint.GetDelegate(),
+            RequestJsonTypeInfo = rpcEndpoint.RequestJsonTypeInfo,
+            ResponseJsonTypeInfo = rpcEndpoint.ResponseJsonTypeInfo
         };
         Validate(rpcEndpoint);
         endpoints.MapRpcEndpoint(rpcEndpoint);
@@ -24,7 +32,10 @@ public class EndpointRegistry(IEndpointRouteBuilder endpoints) : IEndpointRegist
     {
         Items[rpcEndpoint.Path] = new()
         {
-            Delegate = executor
+            Endpoint = rpcEndpoint,
+            Delegate = executor,
+            RequestJsonTypeInfo = rpcEndpoint.RequestJsonTypeInfo,
+            ResponseJsonTypeInfo = rpcEndpoint.ResponseJsonTypeInfo
         };
         Validate(rpcEndpoint);
         endpoints.MapRpcEndpoint(rpcEndpoint);
@@ -34,16 +45,16 @@ public class EndpointRegistry(IEndpointRouteBuilder endpoints) : IEndpointRegist
     public IEndpointRegistry Register<TEndpoint>(TEndpoint endpoint, Func<TEndpoint, Delegate> executorAccessor) where TEndpoint : RpcEndpoint
     {
         var executor = executorAccessor(endpoint);
-        // Chama o método Register que aceita RpcEndpoint<TRequest> e Delegate
-        return Register((dynamic)endpoint, executor);
+        var method = s_registerMethodInfo.MakeGenericMethod(endpoint.InternalRequestJsonTypeInfo?.Type ?? typeof(object));
+        return (IEndpointRegistry)method.Invoke(this, [endpoint, executor])!;
     }
 
     public IEndpointRegistry Register<TEndpoint>(Func<TEndpoint, Delegate> executorAccessor) where TEndpoint : RpcEndpoint, new()
     {
         var endpoint = new TEndpoint();
         var executor = executorAccessor(endpoint);
-        // Chama o método Register que aceita RpcEndpoint<TRequest> e Delegate
-        return Register((dynamic)endpoint, executor);
+        var method = s_registerMethodInfo.MakeGenericMethod(endpoint.InternalRequestJsonTypeInfo?.Type ?? typeof(object));
+        return (IEndpointRegistry)method.Invoke(this, [endpoint, executor])!;
     }
 
     //public IEndpointRegistry Register<TEndpoint>(TEndpoint endpoint, Func<TEndpoint, Delegate> executorAccessor) where TEndpoint : RpcEndpoint, new()
