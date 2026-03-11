@@ -1,16 +1,9 @@
 ﻿using Microsoft.AspNetCore.Routing;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Cblx.Blocks.RpcEndpoints;
 
 public static class MapEndpointExtensions
 {
-    /// <summary>
-    /// RECOMMENDED ACTION: Add the .UseOutputCache() middleware to the pipeline, somewhere you like before this method.
-    /// </summary>
-    /// <param name="endpoints"></param>
-    /// <param name="registrators"></param>
-    /// <returns></returns>
     public static IEndpointRouteBuilder MapEndpoints(
         this IEndpointRouteBuilder endpoints,
         params Action<IEndpointRegistry>[] registrators)
@@ -22,7 +15,7 @@ public static class MapEndpointExtensions
 
     internal static IEndpointRouteBuilder MapRpcEndpoint<TRequest>(this IEndpointRouteBuilder endpoints, RpcEndpoint<TRequest> endpoint)
     {
-        var routeBuilder = endpoints.MapPost(endpoint.Path, endpoint.GetDelegate());
+        var routeBuilder = endpoints.MapPost(endpoint.Path, EndpointRegistry.Items[endpoint.Path].Delegate);
         if (endpoint.Cache != null)
         {
             // If response does not vary by custom logic, then we can use output caching

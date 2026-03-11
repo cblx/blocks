@@ -21,4 +21,3 @@ internal class ValidationFilter<TRequest>(IValidator<TRequest> validator) : IEnd
         return await next.Invoke(context);
     }
 }
-#pragma warning restore CS0067
