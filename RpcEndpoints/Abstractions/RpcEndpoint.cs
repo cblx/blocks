@@ -22,13 +22,8 @@ public abstract class RpcEndpoint<TRequest>(
     public IValidator<TRequest>? Validator { get; } = validator;
     public string Path => $"rpc/{GetType().FullName!.Replace(".", "/")}";
 
-    // Aguardando mais um tempo para o obsolete [Obsolete("Referenciar o método de execução diretamento no registry.Register(...)")]
-    protected virtual Delegate Delegate { get; } = null!;
-
     protected virtual Func<IServiceProvider, string>? VaryServerCacheBy { get; }
 
-    [Obsolete("Será removido.")]
-    internal Delegate GetDelegate() => Delegate;
     internal bool VariesServerCache => VaryServerCacheBy is not null;
     internal string GetServerCacheKey(IServiceProvider serviceProvider, TRequest? request)
     {

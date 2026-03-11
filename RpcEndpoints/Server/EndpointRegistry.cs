@@ -12,22 +12,7 @@ public class EndpointRegistry(IEndpointRouteBuilder endpoints) : IEndpointRegist
                                                 .Where(m => m.Name == nameof(Register) && m.GetParameters().Length == 2)
                                                 .First(m => m.GetParameters()[0].ParameterType.IsGenericType &&
                                                             m.GetParameters()[0].ParameterType.GetGenericTypeDefinition() == typeof(RpcEndpoint<>));
-
-    [Obsolete]
-    public IEndpointRegistry Register<TRequest>(RpcEndpoint<TRequest> rpcEndpoint)
-    {
-        Items[rpcEndpoint.Path] = new() 
-        {
-            Endpoint = rpcEndpoint,
-            Delegate = rpcEndpoint.GetDelegate(),
-            RequestJsonTypeInfo = rpcEndpoint.RequestJsonTypeInfo,
-            ResponseJsonTypeInfo = rpcEndpoint.ResponseJsonTypeInfo
-        };
-        Validate(rpcEndpoint);
-        endpoints.MapRpcEndpoint(rpcEndpoint);
-        return this;
-    }
-
+    
     public IEndpointRegistry Register<TRequest>(RpcEndpoint<TRequest> rpcEndpoint, Delegate executor)
     {
         Items[rpcEndpoint.Path] = new()
