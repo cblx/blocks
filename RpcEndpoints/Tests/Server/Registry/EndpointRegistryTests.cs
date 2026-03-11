@@ -23,9 +23,11 @@ public class EndpointRegistryTests
                 // Instância. O ExecuteAsync tem de estar na própria classe.
                 .Register(new ActWithRequestParamEndpoint(), e => e.ExecuteAsync)
                 // Instância, com new(). O ExecuteAsync tem de estar na própria classe.
-                .Register<ActWithRequestParamEndpoint>(e => e.ExecuteAsync);
-
-
+                .Register<ActWithRequestParamEndpoint>(e => e.ExecuteAsync)
+                // Reflection-based, instancia o declaringtype internamente
+                .Register(ActReflectionRegistrationEndpoint.ExecuteAsync)
+                .Register(ActReflectionRegistrationRequestEndpoint.ExecuteAsync)
+                .Register(ActReflectionRegistrationRequestResponseEndpoint.ExecuteAsync);
     }
 
 
@@ -47,5 +49,20 @@ public class EndpointRegistryTests
     class ActWithServiceAndRequestEndpoint() : ActionEndpoint<Request>(SerContext.Default.Request)
     {
         internal static Task ExecuteAsync(Request request, IServiceProvider serviceProvider) => Task.CompletedTask;
+    }
+
+    class ActReflectionRegistrationEndpoint() : ActionEndpoint()
+    {
+        internal static Task ExecuteAsync() => Task.CompletedTask;
+    }
+    
+    class  ActReflectionRegistrationRequestEndpoint() : ActionEndpoint<Request>(SerContext.Default.Request)
+    {
+        internal static Task ExecuteAsync(Request request) => Task.CompletedTask;
+    }
+
+    class ActReflectionRegistrationRequestResponseEndpoint() : FuncEndpoint<Request, Response>(SerContext.Default.Request, SerContext.Default.Response)
+    {
+        internal static Task<Response> ExecuteAsync(Request request) => Task.FromResult(new Response());
     }
 }

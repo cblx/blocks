@@ -57,25 +57,12 @@ public class EndpointRegistry(IEndpointRouteBuilder endpoints) : IEndpointRegist
         return (IEndpointRegistry)method.Invoke(this, [endpoint, executor])!;
     }
 
-    //public IEndpointRegistry Register<TEndpoint>(TEndpoint endpoint, Func<TEndpoint, Delegate> executorAccessor) where TEndpoint : RpcEndpoint, new()
-    //{
-    //    var executor = executorAccessor(endpoint);
-    //    Items[endpoint.Path] = new()
-    //    {
-    //        Delegate = executor
-    //    };
-    //    Validate(endpoint);
-    //    endpoints.MapRpcEndpoint(endpoint);
-    //    return this;
-
-
-    //}
-
-    //public IEndpointRegistry Register<TEndpoint>(Expression<Func<TEndpoint, Delegate>> executorAccessor) where TEndpoint : RpcEndpoint, new()
-    //{
-    //    throw new NotImplementedException();
-    //}
-
+    public IEndpointRegistry Register(Delegate executor)
+    {
+        var endpoint = (RpcEndpoint)Activator.CreateInstance(executor.Method.DeclaringType!)!;
+        var registerMethod = s_registerMethodInfo.MakeGenericMethod(endpoint.InternalRequestJsonTypeInfo?.Type ?? typeof(object));
+        return (IEndpointRegistry)registerMethod.Invoke(this, [endpoint, executor])!;
+    }
 
     private static void Validate<TRequest>(RpcEndpoint<TRequest> rpcEndpoint)
     {
@@ -134,5 +121,4 @@ public class EndpointRegistry(IEndpointRouteBuilder endpoints) : IEndpointRegist
         return type.GetGenericArguments()[0] == taskType;
     }
 
- 
 }
