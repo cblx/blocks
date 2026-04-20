@@ -122,5 +122,25 @@ internal class ServerEndpointService(IServiceProvider serviceProvider) : IEndpoi
         if (validator is null) return;
         await validator.ValidateAndThrowAsync(request);
     }
+
+    public Task MultipartFormDataRequestAsync(ActionEndpoint actionEndpoint, Action<MultipartFormDataContent> configureContent)
+    {
+        throw new NotSupportedException("Multipart form data requests are not supported on the server.");
+    }
+
+    public Task MultipartFormDataRequestAsync<TRequest>(ActionEndpoint<TRequest> actionEndpoint, TRequest request, Action<MultipartFormDataContent> configureContent)
+    {
+        throw new NotSupportedException("Multipart form data requests are not supported on the server.");
+    }
+
+    public Task<TResponse> MultipartFormDataRequestAsync<TResponse>(FuncEndpoint<TResponse> funcEndpoint, Action<MultipartFormDataContent> configureContent)
+    {
+        throw new NotSupportedException("Multipart form data requests are not supported on the server.");
+    }
+
+    public Task<TResponse> MultipartFormDataRequestAsync<TRequest, TResponse>(FuncEndpoint<TRequest, TResponse> funcEndpoint, TRequest request, Action<MultipartFormDataContent> configureContent)
+    {
+        throw new NotSupportedException("Multipart form data requests are not supported on the server.");
+    }
 }
 #pragma warning restore CS0067
