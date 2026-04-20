@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 using System.Net.Http.Json;
+using System.Text;
 
 namespace Cblx.Blocks.RpcEndpoints;
 
@@ -44,4 +45,51 @@ internal class ClientEndpointService(HttpClient client, IMemoryCache memoryCache
         return response;
     }
 
+    public async Task MultipartFormDataRequestAsync(ActionEndpoint actionEndpoint, Action<MultipartFormDataContent> configureContent)
+    {
+        using var content = new MultipartFormDataContent();
+        configureContent(content);
+        var responseMessage = await client.PostAsync(actionEndpoint.Path, content);
+        responseMessage.EnsureSuccessStatusCode();
+        RequestSucceeded?.Invoke(this, new RequestSucceededEventArgs(actionEndpoint, null, null));
+    }
+
+    public async Task MultipartFormDataRequestAsync<TRequest>(ActionEndpoint<TRequest> actionEndpoint, TRequest request, Action<MultipartFormDataContent> configureContent)
+    {
+        using var content = new MultipartFormDataContent();
+        content.Add(new StringContent(JsonSerializer.Serialize(request, actionEndpoint.RequestJsonTypeInfo!),
+                                      Encoding.UTF8,
+                                      "application/json"), "json");
+        configureContent(content);
+        var responseMessage = await client.PostAsync(actionEndpoint.Path, content);
+        responseMessage.EnsureSuccessStatusCode();
+        RequestSucceeded?.Invoke(this, new RequestSucceededEventArgs(actionEndpoint, request, null));
+    }
+
+    public async Task<TResponse> MultipartFormDataRequestAsync<TResponse>(FuncEndpoint<TResponse> funcEndpoint, Action<MultipartFormDataContent> configureContent)
+    {
+        using var content = new MultipartFormDataContent();
+        configureContent(content);
+        var responseMessage = await client.PostAsync(funcEndpoint.Path, content);
+        responseMessage.EnsureSuccessStatusCode();
+        var responseTypeInfo = funcEndpoint.ResponseJsonTypeInfo as JsonTypeInfo<TResponse>;
+        var response = (await responseMessage.Content.ReadFromJsonAsync(responseTypeInfo!))!;
+        RequestSucceeded?.Invoke(this, new RequestSucceededEventArgs(funcEndpoint, null, response));
+        return response;
+    }
+
+    public async Task<TResponse> MultipartFormDataRequestAsync<TRequest, TResponse>(FuncEndpoint<TRequest, TResponse> funcEndpoint, TRequest request, Action<MultipartFormDataContent> configureContent)
+    {
+        using var content = new MultipartFormDataContent();
+        content.Add(new StringContent(JsonSerializer.Serialize(request, funcEndpoint.RequestJsonTypeInfo!),
+                                      Encoding.UTF8,
+                                      "application/json"), "json");
+        configureContent(content);
+        var responseMessage = await client.PostAsync(funcEndpoint.Path, content);
+        responseMessage.EnsureSuccessStatusCode();
+        var responseTypeInfo = funcEndpoint.ResponseJsonTypeInfo as JsonTypeInfo<TResponse>;
+        var response = (await responseMessage.Content.ReadFromJsonAsync(responseTypeInfo!))!;
+        RequestSucceeded?.Invoke(this, new RequestSucceededEventArgs(funcEndpoint, request, response));
+        return response;
+    }
 }
