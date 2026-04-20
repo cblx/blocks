@@ -67,9 +67,11 @@ public class EndpointRegistry(IEndpointRouteBuilder endpoints) : IEndpointRegist
                 {
                     sbError.AppendLine($"{endpointName} must return a Task.");
                 }
-                if (method.GetParameters().Length == 0 || method.GetParameters()[0].ParameterType != rpcEndpoint.RequestJsonTypeInfo.Type)
+                if (method.GetParameters().Length == 0 
+                    || (method.GetParameters()[0].ParameterType != rpcEndpoint.RequestJsonTypeInfo.Type
+                        && method.GetParameters()[0].ParameterType != typeof(IFormCollection)))
                 {
-                    sbError.AppendLine($"{endpointName} must have the first parameter of type {rpcEndpoint.RequestJsonTypeInfo.Type.Name}.");
+                    sbError.AppendLine($"{endpointName} must have the first parameter of type {rpcEndpoint.RequestJsonTypeInfo.Type.Name} or IFormCollection.");
                 }
                 break;
             case { RequestJsonTypeInfo: not null, ResponseJsonTypeInfo: not null }: // FuncEndpoint<TRequest, TResponse>
@@ -77,9 +79,11 @@ public class EndpointRegistry(IEndpointRouteBuilder endpoints) : IEndpointRegist
                 {
                     sbError.AppendLine($"{endpointName} must return a Task<{rpcEndpoint.ResponseJsonTypeInfo.Type.Name}>.");
                 }
-                if (method.GetParameters().Length == 0 || method.GetParameters()[0].ParameterType != rpcEndpoint.RequestJsonTypeInfo.Type)
+                if (method.GetParameters().Length == 0 
+                    || (method.GetParameters()[0].ParameterType != rpcEndpoint.RequestJsonTypeInfo.Type
+                        && method.GetParameters()[0].ParameterType != typeof(IFormCollection)))
                 {
-                    sbError.AppendLine($"{endpointName} must have the first parameter of type {rpcEndpoint.RequestJsonTypeInfo.Type.Name}.");
+                    sbError.AppendLine($"{endpointName} must have the first parameter of type {rpcEndpoint.RequestJsonTypeInfo.Type.Name} or IFormCollection.");
                 }
                 break;
             case { RequestJsonTypeInfo: null, ResponseJsonTypeInfo: not null }: // FuncEndpoint<TResponse>
