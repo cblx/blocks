@@ -91,6 +91,7 @@ public class EmptyConstructorGenerator : ISourceGenerator
         public List<ClassDeclarationSyntax> Classes { get; } = new List<ClassDeclarationSyntax>();
         private static readonly string _obsoleteAttributeName = nameof(HasObsoleteEmptyConstructorAttribute).Replace("Attribute", "");
         private static readonly string _privateAttributeName = nameof(HasPrivateEmptyConstructorAttribute).Replace("Attribute", "");
+        private static readonly string _protectedAttributeName = nameof(HasProtectedEmptyConstructorAttribute).Replace("Attribute", "");
 
         public void OnVisitSyntaxNode(SyntaxNode syntaxNode)
         {
@@ -102,7 +103,9 @@ public class EmptyConstructorGenerator : ISourceGenerator
             bool hasHasObsoleteEmptyConstructorAttribute = classDeclarationSyntax
                 .AttributeLists
                 .SelectMany(list => list.Attributes)
-                .Any(a => a.Name.ToString() == _obsoleteAttributeName || a.Name.ToString() == _privateAttributeName);
+                .Any(a => a.Name.ToString() == _obsoleteAttributeName 
+                       || a.Name.ToString() == _privateAttributeName
+                       || a.Name.ToString() == _protectedAttributeName);
             if (hasHasObsoleteEmptyConstructorAttribute)
             {
                 Classes.Add(classDeclarationSyntax);
