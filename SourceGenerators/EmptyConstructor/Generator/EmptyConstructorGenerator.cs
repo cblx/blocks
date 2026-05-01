@@ -23,13 +23,19 @@ public class EmptyConstructorGenerator : ISourceGenerator
                 .Where(a => new string[] {
                         nameof(HasObsoleteEmptyConstructorAttribute),
                         nameof(HasPrivateEmptyConstructorAttribute),
+                        nameof(HasProtectedEmptyConstructorAttribute)
                 }.Contains(a.AttributeClass.Name))
                 .FirstOrDefault();
 
             if(attr is null) { continue; }
-            bool isPrivate = attr.AttributeClass.Name is nameof(HasPrivateEmptyConstructorAttribute);
-            string accessor = isPrivate ? "private" : "public";
-            string obsoletAttribute = isPrivate ? "" : ", Obsolete(\"This constructor is reserved for deserialization only. Do not use it.\")";
+            var accessor = attr.AttributeClass.Name switch
+            {
+                nameof(HasObsoleteEmptyConstructorAttribute) => "public",
+                nameof(HasPrivateEmptyConstructorAttribute) => "private",
+                nameof(HasProtectedEmptyConstructorAttribute) => "protected",
+                _ => "public"
+            };
+            string obsoletAttribute = accessor == "public" ? ", Obsolete(\"This constructor is reserved for deserialization only. Do not use it.\")" : "";
             var hasPrimaryConstructor = classDeclarationSyntax.ParameterList is not null;
             string source;
             if (hasPrimaryConstructor)
