@@ -45,6 +45,10 @@ public static class MapEndpointExtensions
         {
             routeBuilder.AddValidator(endpoint.Validator);
         }
+        if (endpoint.DisableAntiforgery)
+        {
+            routeBuilder.DisableAntiforgery();
+        }
         return endpoints;
     }
 }

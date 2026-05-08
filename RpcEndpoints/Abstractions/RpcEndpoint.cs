@@ -11,9 +11,11 @@ public abstract class RpcEndpoint<TRequest>(
     JsonTypeInfo? responseJsonTypeInfo,
     IValidator<TRequest>? validator = null,
     bool allowAnonymous = false,
-    TimeSpan? cache = null): RpcEndpoint(requestJsonTypeInfo)
+    TimeSpan? cache = null,
+    bool disableAntiforgery = false): RpcEndpoint(requestJsonTypeInfo)
 {
     public bool AllowAnonymous { get; } = allowAnonymous;
+    public bool DisableAntiforgery { get; } = disableAntiforgery;
     public TimeSpan? Cache { get; } = cache;
     public JsonTypeInfo? ResponseJsonTypeInfo { get; } = responseJsonTypeInfo;
     public bool HasResponse => ResponseJsonTypeInfo is not null;
