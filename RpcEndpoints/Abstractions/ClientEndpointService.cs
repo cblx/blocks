@@ -45,6 +45,76 @@ internal class ClientEndpointService(HttpClient client, IMemoryCache memoryCache
         return response;
     }
 
+    public IAsyncEnumerable<TResponseItem> RequestAsync<TResponseItem>(FuncAsyncEnumerableEndpoint<TResponseItem> funcEndpoint)
+    {
+        return SendFuncRequestAsyncEnumerable<object, TResponseItem>(funcEndpoint, null);
+    }
+
+    public IAsyncEnumerable<TResponseItem> RequestAsync<TRequest, TResponseItem>(FuncAsyncEnumerableEndpoint<TRequest, TResponseItem> funcEndpoint, TRequest request)
+    {
+        return SendFuncRequestAsyncEnumerable<TRequest, TResponseItem>(funcEndpoint, request);
+    }
+
+    private IAsyncEnumerable<TResponseItem> SendFuncRequestAsyncEnumerable<TRequest, TResponseItem>(RpcEndpoint<TRequest> endpoint, TRequest? request)
+    {
+        var requestMessage = new HttpRequestMessage(HttpMethod.Post, endpoint.Path);
+
+        if (endpoint.RequestJsonTypeInfo != null)
+        {
+            requestMessage.Content = JsonContent.Create(request, endpoint.RequestJsonTypeInfo);
+        }
+
+        var responseMessageTask = client.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead);
+        return ReadResponseAsyncEnumerable(responseMessageTask, endpoint.ResponseJsonTypeInfo as JsonTypeInfo<TResponseItem>);
+    }
+
+    public IAsyncEnumerable<TResponseItem> MultipartFormDataRequestAsync<TResponseItem>(FuncAsyncEnumerableEndpoint<TResponseItem> funcEndpoint, Action<MultipartFormDataContent> configureContent)
+    {
+        var requestMessage = new HttpRequestMessage(
+            HttpMethod.Post,
+            funcEndpoint.Path
+        );
+
+        using var content = new MultipartFormDataContent();
+        configureContent(content);
+        requestMessage.Content = content;
+
+        var responseMessageTask = client.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead);
+
+        return ReadResponseAsyncEnumerable(responseMessageTask, funcEndpoint.ResponseJsonTypeInfo as JsonTypeInfo<TResponseItem>);
+    }
+
+    public IAsyncEnumerable<TResponseItem> MultipartFormDataRequestAsync<TRequest, TResponseItem>(FuncAsyncEnumerableEndpoint<TRequest, TResponseItem> funcEndpoint, TRequest request, Action<MultipartFormDataContent> configureContent)
+    {
+        var requestMessage = new HttpRequestMessage(
+            HttpMethod.Post,
+            funcEndpoint.Path
+        );
+        using var content = new MultipartFormDataContent();
+        content.Add(new StringContent(JsonSerializer.Serialize(request, funcEndpoint.RequestJsonTypeInfo!),
+                                      Encoding.UTF8,
+                                      "application/json"), "json");
+        configureContent(content);
+        requestMessage.Content = content;
+        var responseMessageTask = client.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead);
+        return ReadResponseAsyncEnumerable(responseMessageTask, funcEndpoint.ResponseJsonTypeInfo as JsonTypeInfo<TResponseItem>);
+    }
+
+    private static async IAsyncEnumerable<TResponseItem> ReadResponseAsyncEnumerable<TResponseItem>(Task<HttpResponseMessage> responseMessageTask, JsonTypeInfo<TResponseItem>? responseTypeInfo)
+    {
+        var responseMessage = await responseMessageTask;
+        responseMessage.EnsureSuccessStatusCode();
+        using var stream = await responseMessage.Content.ReadAsStreamAsync();
+        var fluxoLancamentos = JsonSerializer.DeserializeAsyncEnumerable(stream, responseTypeInfo!);
+        await foreach (var item in fluxoLancamentos)
+        {
+            if (item != null)
+            {
+                yield return item;
+            }
+        }
+    }
+
     public async Task MultipartFormDataRequestAsync(ActionEndpoint actionEndpoint, Action<MultipartFormDataContent> configureContent)
     {
         using var content = new MultipartFormDataContent();
@@ -92,4 +162,7 @@ internal class ClientEndpointService(HttpClient client, IMemoryCache memoryCache
         RequestSucceeded?.Invoke(this, new RequestSucceededEventArgs(funcEndpoint, request, response));
         return response;
     }
+
+
+  
 }
