@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 using System.Net.Http.Json;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace Cblx.Blocks.RpcEndpoints;
@@ -75,7 +76,7 @@ internal class ClientEndpointService(HttpClient client, IMemoryCache memoryCache
             funcEndpoint.Path
         );
 
-        using var content = new MultipartFormDataContent();
+        var content = new MultipartFormDataContent();
         configureContent(content);
         requestMessage.Content = content;
 
@@ -90,28 +91,50 @@ internal class ClientEndpointService(HttpClient client, IMemoryCache memoryCache
             HttpMethod.Post,
             funcEndpoint.Path
         );
-        using var content = new MultipartFormDataContent();
-        content.Add(new StringContent(JsonSerializer.Serialize(request, funcEndpoint.RequestJsonTypeInfo!),
+        var content = new MultipartFormDataContent
+        {
+            {
+                new StringContent(JsonSerializer.Serialize(request, funcEndpoint.RequestJsonTypeInfo!),
                                       Encoding.UTF8,
-                                      "application/json"), "json");
+                                      "application/json"),
+                "json"
+            }
+        };
         configureContent(content);
         requestMessage.Content = content;
         var responseMessageTask = client.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead);
         return ReadResponseAsyncEnumerable(responseMessageTask, funcEndpoint.ResponseJsonTypeInfo as JsonTypeInfo<TResponseItem>);
     }
 
-    private static async IAsyncEnumerable<TResponseItem> ReadResponseAsyncEnumerable<TResponseItem>(Task<HttpResponseMessage> responseMessageTask, JsonTypeInfo<TResponseItem>? responseTypeInfo)
+    //private static async IAsyncEnumerable<TResponseItem> ReadResponseAsyncEnumerable<TResponseItem>(Task<HttpResponseMessage> responseMessageTask, JsonTypeInfo<TResponseItem>? responseTypeInfo)
+    //{
+    //    var responseMessage = await responseMessageTask;
+    //    responseMessage.EnsureSuccessStatusCode();
+    //    using var stream = await responseMessage.Content.ReadAsStreamAsync();
+    //    var fluxoLancamentos = JsonSerializer.DeserializeAsyncEnumerable(stream, responseTypeInfo!);
+    //    await foreach (var item in fluxoLancamentos)
+    //    {
+    //        if (item != null)
+    //        {
+    //            yield return item;
+    //        }
+    //    }
+    //}
+
+    private static async IAsyncEnumerable<TResponseItem> ReadResponseAsyncEnumerable<TResponseItem>(
+        Task<HttpResponseMessage> responseMessageTask,
+        JsonTypeInfo<TResponseItem>? responseTypeInfo,
+        [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        var responseMessage = await responseMessageTask;
+        using var responseMessage = await responseMessageTask;
         responseMessage.EnsureSuccessStatusCode();
-        using var stream = await responseMessage.Content.ReadAsStreamAsync();
-        var fluxoLancamentos = JsonSerializer.DeserializeAsyncEnumerable(stream, responseTypeInfo!);
-        await foreach (var item in fluxoLancamentos)
+
+        var stream = await responseMessage.Content.ReadAsStreamAsync(cancellationToken);
+
+        var flow = JsonSerializer.DeserializeAsyncEnumerable(stream, responseTypeInfo!, cancellationToken);
+        await foreach (var item in flow.WithCancellation(cancellationToken))
         {
-            if (item != null)
-            {
-                yield return item;
-            }
+            yield return item!;
         }
     }
 
@@ -164,5 +187,5 @@ internal class ClientEndpointService(HttpClient client, IMemoryCache memoryCache
     }
 
 
-  
+
 }
