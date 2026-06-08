@@ -6,7 +6,12 @@ public interface IEndpointService
     Task RequestAsync<TRequest>(ActionEndpoint<TRequest> actionEndpoint, TRequest request);
     Task<TResponse> RequestAsync<TResponse>(FuncEndpoint<TResponse> funcEndpoint);
     Task<TResponse> RequestAsync<TRequest, TResponse>(FuncEndpoint<TRequest, TResponse> funcEndpoint, TRequest request);
-   
+
+    IAsyncEnumerable<TResponseItem> RequestAsync<TResponseItem>(FuncAsyncEnumerableEndpoint<TResponseItem> funcEndpoint);
+    IAsyncEnumerable<TResponseItem> RequestAsync<TRequest, TResponseItem>(FuncAsyncEnumerableEndpoint<TRequest, TResponseItem> funcEndpoint, TRequest request);
+    IAsyncEnumerable<TResponseItem> MultipartFormDataRequestAsync<TResponseItem>(FuncAsyncEnumerableEndpoint<TResponseItem> funcEndpoint, Action<MultipartFormDataContent> configureContent);
+    IAsyncEnumerable<TResponseItem> MultipartFormDataRequestAsync<TRequest, TResponseItem>(FuncAsyncEnumerableEndpoint<TRequest, TResponseItem> funcEndpoint, TRequest request, Action<MultipartFormDataContent> configureContent);
+
     /// <summary>
     /// EXPERIMENTAL
     /// <br/>

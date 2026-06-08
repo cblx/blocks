@@ -100,6 +100,34 @@ internal class ServerEndpointService(IServiceProvider serviceProvider) : IEndpoi
         return response;
     }
 
+    public IAsyncEnumerable<TResponseItem> RequestAsync<TResponseItem>(FuncAsyncEnumerableEndpoint<TResponseItem> funcEndpoint)
+    {
+        return SendRequestAsyncEnumerable<object, TResponseItem>(funcEndpoint, null);
+    }
+
+    public IAsyncEnumerable<TResponseItem> RequestAsync<TRequest, TResponseItem>(FuncAsyncEnumerableEndpoint<TRequest, TResponseItem> funcEndpoint, TRequest request)
+    {
+        return SendRequestAsyncEnumerable<TRequest, TResponseItem>(funcEndpoint, request);
+    }
+
+    private IAsyncEnumerable<TResponseItem> SendRequestAsyncEnumerable<TRequest, TResponseItem>(RpcEndpoint<TRequest> endpoint, TRequest? request)
+    {
+        var registryItem = EndpointRegistry.Items[endpoint.Path];
+        // File as Link no Client. Os Endpoints terão o mesmo Fullname, mas serão tipos diferentes.
+        // Fazemos então um "Proxy" da chamada
+        if (endpoint.GetType() != registryItem.Endpoint.GetType())
+        {
+            throw new NotSupportedException("Async enumerable endpoints are not supported on the server when using a proxy type. Ensure that the endpoint instance is not a file link.");
+        }
+
+        using var scope = serviceProvider.CreateScope();
+        var scopedProvider = scope.ServiceProvider;
+        // TODO: cache?
+        var servicesAndOrRequest = ExtractServicesAndOrRequest(registryItem.Delegate.Method, scopedProvider, typeof(TRequest), request);
+        return registryItem.Delegate.DynamicInvoke(servicesAndOrRequest) as IAsyncEnumerable<TResponseItem> ?? throw new InvalidOperationException($"The endpoint '{endpoint.GetType().Name}' delegate should return a IAsyncEnumerable<{typeof(TResponseItem).Name}>");
+    }
+
+
     private static object[] ExtractServicesAndOrRequest(
         MethodBase executeAsyncMethod,
         IServiceProvider serviceProvider,
@@ -139,6 +167,17 @@ internal class ServerEndpointService(IServiceProvider serviceProvider) : IEndpoi
     }
 
     public Task<TResponse> MultipartFormDataRequestAsync<TRequest, TResponse>(FuncEndpoint<TRequest, TResponse> funcEndpoint, TRequest request, Action<MultipartFormDataContent> configureContent)
+    {
+        throw new NotSupportedException("Multipart form data requests are not supported on the server.");
+    }
+
+  
+    public IAsyncEnumerable<TResponseItem> MultipartFormDataRequestAsync<TResponseItem>(FuncAsyncEnumerableEndpoint<TResponseItem> funcEndpoint, Action<MultipartFormDataContent> configureContent)
+    {
+        throw new NotSupportedException("Multipart form data requests are not supported on the server.");
+    }
+
+    public IAsyncEnumerable<TResponseItem> MultipartFormDataRequestAsync<TRequest, TResponseItem>(FuncAsyncEnumerableEndpoint<TRequest, TResponseItem> funcEndpoint, TRequest request, Action<MultipartFormDataContent> configureContent)
     {
         throw new NotSupportedException("Multipart form data requests are not supported on the server.");
     }
