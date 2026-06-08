@@ -106,21 +106,6 @@ internal class ClientEndpointService(HttpClient client, IMemoryCache memoryCache
         return ReadResponseAsyncEnumerable(responseMessageTask, funcEndpoint.ResponseJsonTypeInfo as JsonTypeInfo<TResponseItem>);
     }
 
-    //private static async IAsyncEnumerable<TResponseItem> ReadResponseAsyncEnumerable<TResponseItem>(Task<HttpResponseMessage> responseMessageTask, JsonTypeInfo<TResponseItem>? responseTypeInfo)
-    //{
-    //    var responseMessage = await responseMessageTask;
-    //    responseMessage.EnsureSuccessStatusCode();
-    //    using var stream = await responseMessage.Content.ReadAsStreamAsync();
-    //    var fluxoLancamentos = JsonSerializer.DeserializeAsyncEnumerable(stream, responseTypeInfo!);
-    //    await foreach (var item in fluxoLancamentos)
-    //    {
-    //        if (item != null)
-    //        {
-    //            yield return item;
-    //        }
-    //    }
-    //}
-
     private static async IAsyncEnumerable<TResponseItem> ReadResponseAsyncEnumerable<TResponseItem>(
         Task<HttpResponseMessage> responseMessageTask,
         JsonTypeInfo<TResponseItem>? responseTypeInfo,
