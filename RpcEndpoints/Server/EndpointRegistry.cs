@@ -56,6 +56,12 @@ public class EndpointRegistry(IEndpointRouteBuilder endpoints) : IEndpointRegist
         var method = Items[rpcEndpoint.Path].Delegate.Method;
         switch (rpcEndpoint)
         {
+            case IFuncAsyncEnumerable:
+                if (!IsAsyncEnumerableOf(method.ReturnType))
+                {
+                    sbError.AppendLine($"{endpointName} must return an IAsyncEnumerable<{rpcEndpoint.ResponseJsonTypeInfo!.Type.Name}>.");
+                }   
+                break;
             case { RequestJsonTypeInfo: null, ResponseJsonTypeInfo: null }: // ActionEndpoint
                 if (method.ReturnType != typeof(Task))
                 {
@@ -108,6 +114,13 @@ public class EndpointRegistry(IEndpointRouteBuilder endpoints) : IEndpointRegist
         if (!type.IsGenericType) { return false; }
         if (type.GetGenericTypeDefinition() != typeof(Task<>)) { return false; }
         return type.GetGenericArguments()[0] == taskType;
+    }
+
+    public static bool IsAsyncEnumerableOf(Type type)
+    {
+        if (!type.IsGenericType) { return false; }
+        if (type.GetGenericTypeDefinition() != typeof(IAsyncEnumerable<>)) { return false; }
+        return true;
     }
 
 }
